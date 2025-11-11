@@ -178,12 +178,18 @@ body {
     font-weight: 600;
 }
 
+.paso.completado .numero-paso {
+    background: var(--success-color);
+    border-color: var(--success-color);
+}
+
 /* PESTAÑAS INTERNAS - ESTILOS GARANTIZADOS */
 .pestanas-internas {
     display: flex !important;
     background: var(--light-gray) !important;
     border-bottom: 2px solid var(--secondary-color) !important;
     padding: 0 2rem !important;
+    margin: 0 !important;
 }
 
 .pestana-interna {
@@ -198,6 +204,11 @@ body {
     transition: all 0.3s ease !important;
 }
 
+.pestana-interna:hover {
+    background: var(--white) !important;
+    color: var(--primary-color) !important;
+}
+
 .pestana-interna.activa {
     color: var(--secondary-color) !important;
     border-bottom-color: var(--secondary-color) !important;
@@ -207,6 +218,7 @@ body {
 .contenido-pestana {
     display: none !important;
     padding: 2rem !important;
+    margin: 0 !important;
 }
 
 .contenido-pestana.activa {
@@ -230,15 +242,18 @@ body {
     font-size: 1.3rem;
 }
 
+/* GRID DE FORMULARIOS - GARANTIZADO */
 .form-grid {
     display: grid !important;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) !important;
     gap: 1.5rem !important;
+    margin: 0 !important;
 }
 
 .form-group {
     display: flex !important;
     flex-direction: column !important;
+    margin: 0 !important;
 }
 
 .form-group label {
@@ -248,6 +263,11 @@ body {
     font-size: 0.9rem;
 }
 
+.form-group label[required]::after {
+    content: " *";
+    color: var(--accent-color);
+}
+
 .form-input {
     padding: 0.75rem 1rem;
     border: 2px solid var(--light-gray);
@@ -255,15 +275,60 @@ body {
     font-size: 1rem;
     width: 100%;
     background: var(--white);
+    transition: all 0.3s ease;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.form-input:disabled {
+    background-color: #f8f9fa;
+    color: var(--dark-gray);
+    cursor: not-allowed;
+}
+
+.checkbox-group {
+    flex-direction: row !important;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    margin-bottom: 0;
+    font-weight: 500;
+}
+
+.checkbox-label input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+}
+
+select.form-input[multiple] {
+    height: 120px;
+    padding: 0.5rem;
+}
+
+select.form-input[multiple] option {
+    padding: 0.5rem;
+    margin: 2px 0;
 }
 
 /* BOTONES */
 .acciones-paso {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     padding: 2rem;
     border-top: 1px solid var(--light-gray);
     background: var(--light-gray);
+    margin: 0 !important;
 }
 
 .btn-anterior, .btn-siguiente, .btn-guardar, .btn-validar {
@@ -273,6 +338,10 @@ body {
     cursor: pointer;
     font-size: 1rem;
     font-weight: 600;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .btn-anterior {
@@ -280,9 +349,18 @@ body {
     color: var(--white);
 }
 
+.btn-anterior:hover {
+    background: var(--dark-gray);
+}
+
 .btn-siguiente, .btn-validar {
     background: var(--success-color);
     color: var(--white);
+}
+
+.btn-siguiente:hover, .btn-validar:hover {
+    background: #229954;
+    transform: translateY(-2px);
 }
 
 .btn-guardar {
@@ -290,8 +368,183 @@ body {
     color: var(--white);
 }
 
+.btn-guardar:hover {
+    background: #2980b9;
+    transform: translateY(-2px);
+}
+
+/* SECCIÓN CONSULTAS */
+.consultas-container {
+    background: var(--white);
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+    padding: 2rem;
+}
+
+.consultas-container h2 {
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--light-gray);
+}
+
+.search-section {
+    background: var(--light-gray);
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+}
+
+.search-bar {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.search-bar input {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    border: 2px solid var(--medium-gray);
+    border-radius: 6px;
+    font-size: 1rem;
+}
+
+.btn-primary {
+    background: var(--secondary-color);
+    color: var(--white);
+    padding: 0.75rem 2rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.btn-primary:hover {
+    background: #2980b9;
+}
+
+.resultados-container {
+    min-height: 200px;
+}
+
+.placeholder-text {
+    text-align: center;
+    color: var(--dark-gray);
+    padding: 3rem;
+    font-style: italic;
+}
+
+.demo-hint {
+    font-size: 0.9rem;
+    color: var(--secondary-color);
+    margin-top: 0.5rem;
+}
+
+/* DASHBOARD */
+.dashboard-container {
+    background: var(--white);
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+    padding: 2rem;
+}
+
+.dashboard-container h2 {
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--light-gray);
+}
+
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.metric-card {
+    background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+    color: var(--white);
+    padding: 2rem;
+    border-radius: 12px;
+    text-align: center;
+    transition: transform 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.metric-card:hover {
+    transform: translateY(-5px);
+}
+
+.metric-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.metric-card h3 {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    opacity: 0.9;
+}
+
+.metric-value {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.metric-trend {
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+/* FOOTER */
+.app-footer {
+    background: var(--primary-color);
+    color: var(--white);
+    text-align: center;
+    padding: 1.5rem;
+    margin-top: auto;
+}
+
+.app-footer p {
+    opacity: 0.8;
+}
+
 /* RESPONSIVE */
 @media (max-width: 768px) {
+    .app-header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+        padding: 1rem;
+    }
+    
+    .main-tabs {
+        flex-direction: column;
+        padding: 0;
+    }
+    
+    .tab-btn {
+        padding: 1rem;
+        border-bottom: 1px solid var(--light-gray);
+    }
+    
+    .app-main {
+        padding: 1rem;
+    }
+    
+    .progreso-pasos {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem;
+    }
+    
+    .paso:not(:last-child)::after {
+        display: none;
+    }
+    
     .pestanas-internas {
         flex-direction: column !important;
         padding: 0 !important;
@@ -305,11 +558,45 @@ body {
     .form-grid {
         grid-template-columns: 1fr !important;
     }
+    
+    .contenido-pestana {
+        padding: 1rem !important;
+    }
+    
+    .acciones-paso {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .btn-anterior, .btn-siguiente, .btn-guardar, .btn-validar {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .search-bar {
+        flex-direction: column;
+    }
+    
+    .metrics-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
-.app-footer {
-    background: var(--primary-color);
-    color: var(--white);
-    text-align: center;
-    padding: 1.5rem;
+@media (max-width: 480px) {
+    .alta-container, .consultas-container, .dashboard-container {
+        margin: 0.5rem;
+    }
+    
+    .form-paso h3 {
+        font-size: 1.1rem;
+        padding: 1rem;
+    }
+    
+    .metric-card {
+        padding: 1.5rem;
+    }
+    
+    .metric-value {
+        font-size: 2rem;
+    }
 }
