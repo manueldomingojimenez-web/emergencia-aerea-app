@@ -5,7 +5,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Inicializar funcionalidades
     initTabs();
     initSteps();
-    initSectionTabs();
     initSaveButton();
     initFieldEffects();
 });
@@ -40,23 +39,6 @@ function initSteps() {
             this.classList.add('active');
             
             console.log('Paso cambiado a:', this.textContent);
-        });
-    });
-}
-
-// Funcionalidad para las pestañas de sección
-function initSectionTabs() {
-    const sectionTabs = document.querySelectorAll('.section-tab');
-    
-    sectionTabs.forEach(tab => {
-        tab.addEventListener('click', function() {
-            // Remover clase active de todas las pestañas de sección
-            sectionTabs.forEach(t => t.classList.remove('active'));
-            
-            // Agregar clase active a la pestaña clickeada
-            this.classList.add('active');
-            
-            console.log('Sección cambiada a:', this.textContent);
         });
     });
 }
@@ -153,34 +135,4 @@ function resetFormStyles() {
         field.style.borderColor = '';
         field.style.boxShadow = '';
     });
-}
-
-// Función para mostrar notificación
-function showNotification(message, type = 'success') {
-    const notification = document.createElement('div');
-    notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        padding: 15px 20px;
-        border-radius: 8px;
-        color: white;
-        font-weight: 600;
-        z-index: 1000;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        transition: all 0.3s ease;
-    `;
-    
-    if (type === 'success') {
-        notification.style.background = 'linear-gradient(135deg, #27ae60, #2ecc71)';
-    } else {
-        notification.style.background = 'linear-gradient(135deg, #e74c3c, #c0392b)';
-    }
-    
-    notification.textContent = message;
-    document.body.appendChild(notification);
-    
-    setTimeout(() => {
-        notification.remove();
-    }, 3000);
 }
