@@ -1,333 +1,186 @@
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+// Esperar a que el DOM esté completamente cargado
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Sistema de Gestión Emerg cargado correctamente');
+    
+    // Inicializar funcionalidades
+    initTabs();
+    initSteps();
+    initSectionTabs();
+    initSaveButton();
+    initFieldEffects();
+});
+
+// Funcionalidad para las pestañas principales
+function initTabs() {
+    const tabs = document.querySelectorAll('.tab');
+    
+    tabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+            // Remover clase active de todas las pestañas
+            tabs.forEach(t => t.classList.remove('active'));
+            
+            // Agregar clase active a la pestaña clickeada
+            this.classList.add('active');
+            
+            console.log('Pestaña cambiada a:', this.textContent);
+        });
+    });
 }
 
-body {
-    background-color: #f5f7fa;
-    padding: 20px;
-    color: #2c3e50;
-    line-height: 1.6;
+// Funcionalidad para los pasos
+function initSteps() {
+    const steps = document.querySelectorAll('.step');
+    
+    steps.forEach(step => {
+        step.addEventListener('click', function() {
+            // Remover clase active de todos los pasos
+            steps.forEach(s => s.classList.remove('active'));
+            
+            // Agregar clase active al paso clickeado
+            this.classList.add('active');
+            
+            console.log('Paso cambiado a:', this.textContent);
+        });
+    });
 }
 
-.header {
-    background: linear-gradient(135deg, #2c3e50, #34495e);
-    color: white;
-    padding: 25px;
-    border-radius: 10px;
-    margin-bottom: 25px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+// Funcionalidad para las pestañas de sección
+function initSectionTabs() {
+    const sectionTabs = document.querySelectorAll('.section-tab');
+    
+    sectionTabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+            // Remover clase active de todas las pestañas de sección
+            sectionTabs.forEach(t => t.classList.remove('active'));
+            
+            // Agregar clase active a la pestaña clickeada
+            this.classList.add('active');
+            
+            console.log('Sección cambiada a:', this.textContent);
+        });
+    });
 }
 
-.header h1 {
-    font-size: 2rem;
-    margin-bottom: 10px;
-    font-weight: 700;
+// Funcionalidad para el botón Guardar
+function initSaveButton() {
+    const saveButton = document.getElementById('guardarBtn');
+    
+    saveButton.addEventListener('click', function() {
+        console.log('Botón Guardar clickeado');
+        
+        const requiredFields = document.querySelectorAll('.required-field');
+        let isValid = true;
+        let emptyFields = [];
+        
+        // Validar campos requeridos
+        requiredFields.forEach(field => {
+            if (!field.value.trim()) {
+                isValid = false;
+                field.style.borderColor = '#e74c3c';
+                field.style.boxShadow = '0 0 0 3px rgba(231, 76, 60, 0.1)';
+                emptyFields.push(field.previousElementSibling.textContent);
+            } else {
+                field.style.borderColor = '#27ae60';
+                field.style.boxShadow = '0 0 0 3px rgba(39, 174, 96, 0.1)';
+            }
+        });
+        
+        if (isValid) {
+            // Simular envío exitoso
+            this.innerHTML = '✓ Guardando...';
+            this.style.background = 'linear-gradient(135deg, #27ae60, #2ecc71)';
+            
+            setTimeout(() => {
+                alert('✅ Formulario guardado correctamente');
+                this.innerHTML = 'Guardar';
+                resetFormStyles();
+            }, 1500);
+            
+            console.log('Formulario válido, enviando datos...');
+        } else {
+            alert('❌ Por favor, complete los siguientes campos obligatorios:\n• ' + emptyFields.join('\n• '));
+            console.log('Campos requeridos vacíos:', emptyFields);
+        }
+    });
 }
 
-.header .subtitle {
-    font-size: 1.1rem;
-    margin-bottom: 20px;
-    opacity: 0.9;
-    font-weight: 400;
+// Efectos para los campos del formulario
+function initFieldEffects() {
+    const fields = document.querySelectorAll('input, select');
+    
+    fields.forEach(field => {
+        // Efecto al enfocar
+        field.addEventListener('focus', function() {
+            this.style.transform = 'translateY(-2px)';
+            this.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+            this.style.borderColor = '#3498db';
+        });
+        
+        // Efecto al perder el foco
+        field.addEventListener('blur', function() {
+            this.style.transform = 'translateY(0)';
+            this.style.boxShadow = 'none';
+            
+            // Validación en tiempo real para campos requeridos
+            if (this.classList.contains('required-field')) {
+                if (this.value.trim()) {
+                    this.style.borderColor = '#27ae60';
+                } else {
+                    this.style.borderColor = '#e74c3c';
+                }
+            }
+        });
+        
+        // Efecto hover
+        field.addEventListener('mouseenter', function() {
+            if (document.activeElement !== this) {
+                this.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
+            }
+        });
+        
+        field.addEventListener('mouseleave', function() {
+            if (document.activeElement !== this) {
+                this.style.boxShadow = 'none';
+            }
+        });
+    });
 }
 
-.tabs {
-    display: flex;
-    gap: 8px;
+// Función para resetear estilos del formulario
+function resetFormStyles() {
+    const fields = document.querySelectorAll('input, select');
+    fields.forEach(field => {
+        field.style.borderColor = '';
+        field.style.boxShadow = '';
+    });
 }
 
-.tab {
-    padding: 14px 28px;
-    background-color: rgba(255,255,255,0.15);
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    color: white;
-    font-size: 15px;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    flex: 1;
-    text-align: center;
-}
-
-.tab:hover {
-    background-color: rgba(255,255,255,0.25);
-    transform: translateY(-2px);
-}
-
-.tab.active {
-    background-color: #3498db;
-    font-weight: 600;
-    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
-}
-
-.container {
-    background-color: white;
-    border-radius: 12px;
-    padding: 30px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-    margin-bottom: 30px;
-}
-
-.form-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 30px;
-    padding-bottom: 20px;
-    border-bottom: 3px solid #ecf0f1;
-}
-
-.form-title {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #2c3e50;
-}
-
-.steps {
-    display: flex;
-    gap: 15px;
-    margin-bottom: 30px;
-}
-
-.step {
-    padding: 15px 25px;
-    background-color: #ecf0f1;
-    border-radius: 8px;
-    font-weight: 600;
-    color: #7f8c8d;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    flex: 1;
-    text-align: center;
-    border: 2px solid transparent;
-}
-
-.step.active {
-    background-color: #3498db;
-    color: white;
-    border-color: #2980b9;
-    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
-}
-
-.step:hover:not(.active) {
-    background-color: #d5dbdb;
-    transform: translateY(-2px);
-}
-
-.save-button {
-    background: linear-gradient(135deg, #27ae60, #2ecc71);
-    color: white;
-    border: none;
-    padding: 15px 35px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
-}
-
-.save-button:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(39, 174, 96, 0.4);
-}
-
-.save-button:active {
-    transform: translateY(-1px);
-}
-
-.tabs-section {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 0;
-}
-
-.section-tab {
-    padding: 14px 25px;
-    background-color: #ecf0f1;
-    border: 2px solid #bdc3c7;
-    border-radius: 8px 8px 0 0;
-    cursor: pointer;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    flex: 1;
-    text-align: center;
-    color: #7f8c8d;
-}
-
-.section-tab.active {
-    background-color: white;
-    border-bottom: 2px solid white;
-    color: #3498db;
-    border-color: #3498db;
-}
-
-.section-tab:hover:not(.active) {
-    background-color: #d5dbdb;
-    color: #2c3e50;
-}
-
-.form-section {
-    border: 2px solid #3498db;
-    border-top: none;
-    padding: 30px;
-    border-radius: 0 0 12px 12px;
-    background-color: white;
-}
-
-.form-row {
-    display: flex;
-    gap: 25px;
-    margin-bottom: 25px;
-}
-
-.form-group {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-}
-
-label {
-    display: block;
-    margin-bottom: 10px;
-    font-weight: 600;
-    color: #2c3e50;
-    font-size: 15px;
-}
-
-input, select {
-    width: 100%;
-    padding: 12px 16px;
-    border: 2px solid #dcdfe4;
-    border-radius: 8px;
-    font-size: 15px;
-    transition: all 0.3s ease;
-    background-color: white;
-}
-
-input:focus, select:focus {
-    outline: none;
-    border-color: #3498db;
-    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
-    background-color: #fafbfc;
-}
-
-input::placeholder {
-    color: #95a5a6;
-    font-weight: 400;
-}
-
-.checkbox-group {
-    display: flex;
-    align-items: center;
-    margin-bottom: 25px;
-    padding: 10px 0;
-}
-
-.checkbox-group input {
-    width: auto;
-    margin-right: 12px;
-    transform: scale(1.3);
-}
-
-.checkbox-group label {
-    margin-bottom: 0;
-    font-weight: 600;
-    color: #2c3e50;
-    font-size: 15px;
-}
-
-.special-tags {
-    display: flex;
-    gap: 20px;
-    margin-bottom: 30px;
-    justify-content: center;
-}
-
-.tag {
-    padding: 10px 20px;
-    background: linear-gradient(135deg, #e74c3c, #c0392b);
-    color: white;
-    border-radius: 25px;
-    font-weight: 700;
-    font-size: 13px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
-    transition: all 0.3s ease;
-}
-
-.tag:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(231, 76, 60, 0.4);
-}
-
-.tag:nth-child(2) {
-    background: linear-gradient(135deg, #9b59b6, #8e44ad);
-    box-shadow: 0 4px 12px rgba(155, 89, 182, 0.3);
-}
-
-.tag:nth-child(2):hover {
-    box-shadow: 0 6px 15px rgba(155, 89, 182, 0.4);
-}
-
-.tag:nth-child(3) {
-    background: linear-gradient(135deg, #f39c12, #e67e22);
-    box-shadow: 0 4px 12px rgba(243, 156, 18, 0.3);
-}
-
-.tag:nth-child(3):hover {
-    box-shadow: 0 6px 15px rgba(243, 156, 18, 0.4);
-}
-
-select[multiple] {
-    height: 120px;
-    resize: vertical;
-    min-height: 120px;
-}
-
-.required::after {
-    content: " *";
-    color: #e74c3c;
-    font-weight: bold;
-}
-
-.required-field:invalid {
-    border-color: #e74c3c;
-}
-
-.required-field:valid {
-    border-color: #27ae60;
-}
-
-@media (max-width: 768px) {
-    .form-row {
-        flex-direction: column;
-        gap: 20px;
+// Función para mostrar notificación
+function showNotification(message, type = 'success') {
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 20px;
+        border-radius: 8px;
+        color: white;
+        font-weight: 600;
+        z-index: 1000;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        transition: all 0.3s ease;
+    `;
+    
+    if (type === 'success') {
+        notification.style.background = 'linear-gradient(135deg, #27ae60, #2ecc71)';
+    } else {
+        notification.style.background = 'linear-gradient(135deg, #e74c3c, #c0392b)';
     }
     
-    .tabs, .steps, .special-tags {
-        flex-wrap: wrap;
-    }
+    notification.textContent = message;
+    document.body.appendChild(notification);
     
-    .header h1 {
-        font-size: 1.5rem;
-    }
-    
-    .tab, .step, .section-tab {
-        flex: 1 1 calc(50% - 10px);
-        min-width: 120px;
-    }
-    
-    .container {
-        padding: 20px;
-    }
-    
-    .form-section {
-        padding: 20px;
-    }
+    setTimeout(() => {
+        notification.remove();
+    }, 3000);
 }
