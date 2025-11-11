@@ -88,16 +88,6 @@ body {
     background: var(--white);
 }
 
-.tab-btn.active::after {
-    content: '';
-    position: absolute;
-    bottom: -2px;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: var(--secondary-color);
-}
-
 /* CONTENIDO PRINCIPAL */
 .app-main {
     flex: 1;
@@ -208,10 +198,44 @@ body {
     background: var(--success-color);
 }
 
+/* PESTAÑAS INTERNAS PARA FORMULARIOS LARGOS */
+.pestanas-internas {
+    display: flex;
+    background: var(--light-gray);
+    border-bottom: 1px solid var(--medium-gray);
+    padding: 0 2rem;
+}
+
+.pestana-interna {
+    padding: 1rem 2rem;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--dark-gray);
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.pestana-interna.activa {
+    color: var(--secondary-color);
+    border-bottom-color: var(--secondary-color);
+    background: var(--white);
+}
+
+.contenido-pestana {
+    display: none;
+    padding: 2rem;
+}
+
+.contenido-pestana.activa {
+    display: block;
+}
+
 /* FORMULARIOS POR PASOS */
 .form-paso {
     display: none;
-    padding: 2rem;
 }
 
 .form-paso.activo {
@@ -227,8 +251,8 @@ body {
 .form-paso h3 {
     color: var(--primary-color);
     margin-bottom: 1.5rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 2px solid var(--light-gray);
+    padding: 0 2rem;
+    padding-top: 2rem;
     font-size: 1.3rem;
 }
 
@@ -316,12 +340,13 @@ select.form-input[multiple] option {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-top: 2rem;
+    padding: 2rem;
     border-top: 1px solid var(--light-gray);
     margin-top: 1rem;
+    background: var(--light-gray);
 }
 
-.btn-anterior, .btn-siguiente, .btn-guardar {
+.btn-anterior, .btn-siguiente, .btn-guardar, .btn-validar {
     padding: 0.75rem 2rem;
     border: none;
     border-radius: 6px;
@@ -335,161 +360,74 @@ select.form-input[multiple] option {
 }
 
 .btn-anterior {
-    background: var(--light-gray);
-    color: var(--text-color);
+    background: var(--medium-gray);
+    color: var(--white);
 }
 
 .btn-anterior:hover {
-    background: var(--medium-gray);
+    background: var(--dark-gray);
 }
 
-.btn-siguiente, .btn-guardar {
+.btn-siguiente, .btn-validar {
     background: var(--success-color);
     color: var(--white);
 }
 
-.btn-siguiente:hover, .btn-guardar:hover {
+.btn-siguiente:hover, .btn-validar:hover {
     background: #229954;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(34, 153, 84, 0.3);
 }
 
-/* SECCIÓN CONSULTAS */
-.consultas-container {
-    background: var(--white);
-    border-radius: 12px;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.12);
-    padding: 2rem;
+.btn-guardar {
+    background: var(--secondary-color);
+    color: var(--white);
 }
 
-.consultas-container h2 {
-    color: var(--primary-color);
-    margin-bottom: 1.5rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 2px solid var(--light-gray);
+.btn-guardar:hover {
+    background: #2980b9;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
 }
 
-.search-section {
+/* RESUMEN CONFIRMACIÓN */
+.resumen-datos {
+    padding: 0 2rem;
+}
+
+.resumen-seccion {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
     background: var(--light-gray);
-    padding: 1.5rem;
     border-radius: 8px;
-    margin-bottom: 2rem;
+    border-left: 4px solid var(--secondary-color);
 }
 
-.search-bar {
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 1rem;
-}
-
-.search-bar input {
-    flex: 1;
-    padding: 0.75rem 1rem;
-    border: 2px solid var(--medium-gray);
-    border-radius: 6px;
-    font-size: 1rem;
-}
-
-.search-filters {
-    display: flex;
-    gap: 1rem;
-}
-
-.search-filters select {
-    padding: 0.5rem 1rem;
-    border: 2px solid var(--medium-gray);
-    border-radius: 6px;
-    background: var(--white);
-}
-
-/* RESULTADOS Y DETALLES */
-.resultados-container {
-    min-height: 200px;
-}
-
-.placeholder-text {
-    text-align: center;
-    color: var(--dark-gray);
-    padding: 3rem;
-    font-style: italic;
-}
-
-.demo-hint {
-    font-size: 0.9rem;
-    color: var(--secondary-color);
-    margin-top: 0.5rem;
-}
-
-/* DASHBOARD */
-.dashboard-container {
-    background: var(--white);
-    border-radius: 12px;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.12);
-    padding: 2rem;
-}
-
-.dashboard-container h2 {
+.resumen-seccion h4 {
     color: var(--primary-color);
-    margin-bottom: 1.5rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 2px solid var(--light-gray);
-}
-
-.metrics-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 2rem;
-}
-
-.metric-card {
-    background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
-    color: var(--white);
-    padding: 2rem;
-    border-radius: 12px;
-    text-align: center;
-    transition: transform 0.3s ease;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-}
-
-.metric-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-}
-
-.metric-icon {
-    font-size: 2.5rem;
     margin-bottom: 1rem;
+    font-size: 1.1rem;
 }
 
-.metric-card h3 {
-    font-size: 1rem;
-    margin-bottom: 0.5rem;
-    opacity: 0.9;
+.resumen-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
 }
 
-.metric-value {
-    font-size: 2.5rem;
-    font-weight: bold;
-    margin-bottom: 0.5rem;
+.resumen-item {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--medium-gray);
 }
 
-.metric-trend {
-    font-size: 0.9rem;
-    opacity: 0.8;
+.resumen-item:last-child {
+    border-bottom: none;
 }
 
-/* FOOTER */
-.app-footer {
-    background: var(--primary-color);
-    color: var(--white);
-    text-align: center;
-    padding: 1.5rem;
-    margin-top: auto;
-}
-
-.app-footer p {
-    opacity: 0.8;
+.resumen-item strong {
+    color: var(--primary-color);
+    display: inline-block;
+    min-width: 150px;
 }
 
 /* DISEÑO RESPONSIVE */
@@ -525,16 +463,22 @@ select.form-input[multiple] option {
         display: none;
     }
     
+    .pestanas-internas {
+        flex-direction: column;
+        padding: 0;
+    }
+    
+    .pestana-interna {
+        padding: 1rem;
+        border-bottom: 1px solid var(--medium-gray);
+    }
+    
     .form-grid {
         grid-template-columns: 1fr;
     }
     
-    .search-bar {
-        flex-direction: column;
-    }
-    
-    .search-filters {
-        flex-direction: column;
+    .contenido-pestana {
+        padding: 1rem;
     }
     
     .acciones-paso {
@@ -542,67 +486,31 @@ select.form-input[multiple] option {
         gap: 1rem;
     }
     
-    .btn-anterior, .btn-siguiente, .btn-guardar {
+    .btn-anterior, .btn-siguiente, .btn-guardar, .btn-validar {
         width: 100%;
         justify-content: center;
     }
     
-    .metrics-grid {
+    .resumen-grid {
         grid-template-columns: 1fr;
     }
 }
 
-@media (max-width: 480px) {
-    .alta-container, .consultas-container, .dashboard-container {
-        margin: 0.5rem;
-        padding: 1rem;
-    }
-    
-    .form-paso {
-        padding: 1rem;
-    }
-    
-    .form-paso h3 {
-        font-size: 1.1rem;
-    }
-    
-    .metric-card {
-        padding: 1.5rem;
-    }
-    
-    .metric-value {
-        font-size: 2rem;
-    }
-}
-
-/* ESTADOS VISUALES */
-.no-results {
-    text-align: center;
-    padding: 3rem;
-    color: var(--dark-gray);
-}
-
-.suggestion {
-    font-size: 0.9rem;
-    margin-top: 0.5rem;
-    opacity: 0.7;
-}
-
-/* BOTONES PRINCIPALES */
-.btn-primary {
-    background: var(--secondary-color);
-    color: var(--white);
-    padding: 0.75rem 2rem;
-    border: none;
-    border-radius: 6px;
+/* ESTILOS PARA DEMO FUNCIONAL */
+.paso.demo-activo {
     cursor: pointer;
-    font-size: 1rem;
-    font-weight: 600;
-    transition: all 0.3s ease;
 }
 
-.btn-primary:hover {
-    background: #2980b9;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+.paso.demo-activo:hover .numero-paso {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+/* FOOTER */
+.app-footer {
+    background: var(--primary-color);
+    color: var(--white);
+    text-align: center;
+    padding: 1.5rem;
+    margin-top: auto;
 }
