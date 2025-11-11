@@ -140,7 +140,6 @@ body {
     transform: translateY(-1px);
 }
 
-/* ESTILOS PARA UNA SOLA PESTAÑA */
 .tabs-section {
     margin-bottom: 0;
 }
@@ -284,32 +283,7 @@ input::placeholder {
     font-size: 15px;
 }
 
-.special-tags {
-    display: flex;
-    gap: 20px;
-    margin-bottom: 30px;
-    justify-content: center;
-}
-
-.tag {
-    padding: 10px 20px;
-    background: linear-gradient(135deg, #e74c3c, #c0392b);
-    color: white;
-    border-radius: 25px;
-    font-weight: 700;
-    font-size: 13px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
-}
-
-.tag:nth-child(2) {
-    background: linear-gradient(135deg, #9b59b6, #8e44ad);
-}
-
-.tag:nth-child(3) {
-    background: linear-gradient(135deg, #f39c12, #e67e22);
-}
+/* ELIMINADOS LOS ESTILOS DE .special-tags y .tag */
 
 select[multiple] {
     height: 120px;
@@ -343,7 +317,7 @@ select[multiple] {
         gap: 20px;
     }
     
-    .tabs, .steps, .special-tags {
+    .tabs, .steps {
         flex-wrap: wrap;
     }
     
