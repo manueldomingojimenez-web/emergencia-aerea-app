@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Gestión Emergencia Aérea</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div id="app">
+        <header class="app-header">
+            <h1>🛡️ Sistema de Gestión - Emergencia Aérea</h1>
+            <div class="user-info">
+                <span id="userName">Agente - AENA</span>
+            </div>
+        </header>
+
+        <nav class="app-nav">
+            <button class="nav-btn active" data-section="registro">Nuevo Registro</button>
+            <button class="nav-btn" data-section="buscar">Buscar</button>
+            <button class="nav-btn" data-section="dashboard">Dashboard</button>
+        </nav>
+
+        <main class="app-main">
+            <section id="registro" class="section active">
+                <div class="form-container">
+                    <h2>Registro de Familiar y Víctima</h2>
+                    
+                    <div class="form-section">
+                        <h3>📋 Datos del Familiar</h3>
+                        <div class="form-grid">
+                            <input type="text" id="Num_Control_Familiar" placeholder="Nº Control Familia" class="form-input">
+                            <input type="text" id="Apellidos" placeholder="Apellidos" class="form-input">
+                            <input type="text" id="Nombre" placeholder="Nombre" class="form-input">
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>👤 Datos de la Víctima</h3>
+                        <div class="form-grid">
+                            <input type="text" id="N_Vuelo" placeholder="Número de Vuelo" class="form-input">
+                            <input type="text" id="V_Apellidos" placeholder="Apellidos Víctima" class="form-input">
+                            <input type="text" id="V_Nombre" placeholder="Nombre Víctima" class="form-input">
+                        </div>
+                    </div>
+
+                    <button id="btnGuardar" class="btn-primary">Guardar Registro</button>
+                </div>
+            </section>
+
+            <section id="buscar" class="section">
+                <div class="search-container">
+                    <h2>🔍 Consultar Registros</h2>
+                    <div class="search-bar">
+                        <input type="text" id="inputBusqueda" placeholder="Buscar por vuelo, apellidos...">
+                        <button class="btn-primary">Buscar</button>
+                    </div>
+                    <div id="resultadosBusqueda">
+                        <p class="placeholder-text">Ingrese términos de búsqueda</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="dashboard" class="section">
+                <h2>📊 Dashboard</h2>
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <h3>Familiares Registrados</h3>
+                        <span class="metric-value">0</span>
+                    </div>
+                    <div class="metric-card">
+                        <h3>Víctimas Registradas</h3>
+                        <span class="metric-value">0</span>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="app-footer">
+            <p>Sistema de Gestión para Emergencias Aéreas - v1.0</p>
+        </footer>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
