@@ -1,219 +1,199 @@
+// JavaScript para funcionalidad de pestañas y navegación
 class DemoApp {
-  constructor() {
-    this.pasoActual = 1;
-    this.familiarValid = false;
-    this.afectadoValid = false;
+    constructor() {
+        this.pasoActual = 1;
+        this.init();
+    }
 
-    // KPIs demo
-    this.totalFam = 0;
-    this.totalAfe = 0;
+    init() {
+        this.setupEventListeners();
+        this.mostrarPaso(1);
+        console.log('✅ Demo app inicializada - CSS garantizado');
+    }
 
-    this.init();
-  }
+    setupEventListeners() {
+        // Pestañas principales
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const tab = e.target.getAttribute('data-tab');
+                this.mostrarPestana(tab);
+            });
+        });
 
-  init() {
-    this.setupEventListeners();
-    this.mostrarPestana("Altas");
-    this.mostrarPaso(1);
-    this.actualizarUIEstado();
-    console.log("✅ Demo app inicializada");
-  }
+        // Navegación por pasos
+        document.querySelectorAll('.paso').forEach(paso => {
+            paso.addEventListener('click', (e) => {
+                const nuevoPaso = parseInt(e.currentTarget.getAttribute('data-paso'));
+                this.mostrarPaso(nuevoPaso);
+            });
+        });
 
-  qs(sel){ return document.querySelector(sel); }
-  qsa(sel){ return Array.from(document.querySelectorAll(sel)); }
+        // Pestañas internas
+        document.querySelectorAll('.pestana-interna').forEach(pestana => {
+            pestana.addEventListener('click', (e) => {
+                const pestanaId = e.target.getAttribute('data-pestana');
+                this.mostrarPestanaInterna(pestanaId);
+            });
+        });
 
-  setupEventListeners() {
-    // Tabs principales
-    this.qsa(".tab-btn").forEach(btn => {
-      btn.addEventListener("click", (e) => {
-        const tab = e.currentTarget?.dataset?.tab;
-        if (tab) this.mostrarPestana(tab);
-      });
-    });
+        // Botones de acción
+        document.getElementById('btnValidarFamiliar')?.addEventListener('click', () => {
+            this.validarFamiliar();
+        });
 
-    // Stepper
-    this.qsa(".paso").forEach(paso => {
-      paso.addEventListener("click", (e) => {
-        const nuevoPaso = parseInt(e.currentTarget?.dataset?.paso || "0", 10);
-        if (!nuevoPaso) return;
-        if (nuevoPaso === 2 && !this.familiarValid) {
-          alert("⚠️ Debes validar el Familiar antes de pasar a Afectado.");
-          return;
+        document.getElementById('btnSiguienteAfectado')?.addEventListener('click', () => {
+            this.mostrarPaso(2);
+        });
+
+        document.getElementById('btnValidarAfectado')?.addEventListener('click', () => {
+            this.validarAfectado();
+        });
+
+        document.getElementById('btnSiguienteConfirmacion')?.addEventListener('click', () => {
+            this.mostrarPaso(3);
+        });
+
+        document.getElementById('btnAnteriorFamiliar')?.addEventListener('click', () => {
+            this.mostrarPaso(1);
+        });
+
+        document.getElementById('btnAnteriorAfectado')?.addEventListener('click', () => {
+            this.mostrarPaso(2);
+        });
+
+        document.getElementById('btnGuardarFinal')?.addEventListener('click', () => {
+            this.guardarRegistro();
+        });
+
+        // Lógica del portavoz
+        const portavozCheckbox = document.getElementById('Portavoz');
+        const nombrePortavozInput = document.getElementById('Nombre_Port');
+        
+        if (portavozCheckbox && nombrePortavozInput) {
+            portavozCheckbox.addEventListener('change', () => {
+                nombrePortavozInput.disabled = !portavozCheckbox.checked;
+                if (!portavozCheckbox.checked) {
+                    nombrePortavozInput.value = '';
+                }
+            });
         }
-        if (nuevoPaso === 3 && !(this.familiarValid && this.afectadoValid)) {
-          alert("⚠️ Debes validar Familiar y Afectado antes de Confirmación.");
-          return;
+    }
+
+    mostrarPestana(tabName) {
+        // Ocultar todas las pestañas
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+        
+        // Mostrar pestaña seleccionada
+        document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+        document.getElementById(tabName).classList.add('active');
+    }
+
+    mostrarPaso(numeroPaso) {
+        this.pasoActual = numeroPaso;
+        
+        // Actualizar estado visual de pasos
+        document.querySelectorAll('.paso').forEach(paso => {
+            paso.classList.remove('activo', 'completado');
+        });
+
+        // Marcar pasos anteriores como completados
+        for (let i = 1; i < numeroPaso; i++) {
+            document.querySelector(`[data-paso="${i}"]`).classList.add('completado');
         }
-        this.mostrarPaso(nuevoPaso);
-      });
-    });
 
-    // Subpestañas
-    this.qsa(".pestana-interna").forEach(pestana => {
-      pestana.addEventListener("click", (e) => {
-        const id = e.currentTarget?.dataset?.pestana;
-        if (id) this.mostrarPestanaInterna(id);
-      });
-    });
+        // Marcar paso actual como activo
+        document.querySelector(`[data-paso="${numeroPaso}"]`).classList.add('activo');
 
-    // Botones acción
-    this.qs("#btnValidarFamiliar")?.addEventListener("click", () => this.validarFamiliar());
-    this.qs("#btnSiguienteAfectado")?.addEventListener("click", () => this.mostrarPaso(2));
-    this.qs("#btnValidarAfectado")?.addEventListener("click", () => this.validarAfectado());
-    this.qs("#btnSiguienteConfirmacion")?.addEventListener("click", () => this.mostrarPaso(3));
-    this.qs("#btnGuardarFinal")?.addEventListener("click", () => this.guardarRegistro());
-  }
+        // Ocultar todos los pasos de formulario
+        document.querySelectorAll('.form-paso').forEach(paso => {
+            paso.classList.remove('activo');
+        });
 
-  mostrarPestana(tabName) {
-    this.qsa(".tab-btn").forEach(btn => btn.classList.remove("active"));
-    this.qsa(".tab-content").forEach(tab => tab.classList.remove("active"));
-    this.qs(`[data-tab="${tabName}"]`)?.classList.add("active");
-    this.qs(`#${tabName}`)?.classList.add("active");
-  }
+        // Mostrar paso actual
+        const pasoElement = document.getElementById(`paso-${this.getPasoName(numeroPaso)}`);
+        if (pasoElement) {
+            pasoElement.classList.add('activo');
+        }
 
-  mostrarPaso(numeroPaso) {
-    this.pasoActual = numeroPaso;
-
-    // Reset estados visuales
-    this.qsa(".paso").forEach(p => p.classList.remove("activo", "completado", "bloqueado"));
-
-    // Completados según flags
-    if (this.familiarValid) this.qs(`[data-paso="1"]`)?.classList.add("completado");
-    if (this.afectadoValid) this.qs(`[data-paso="2"]`)?.classList.add("completado");
-
-    // Bloqueos según estado
-    if (!this.familiarValid) this.qs(`[data-paso="2"]`)?.classList.add("bloqueado");
-    if (!(this.familiarValid && this.afectadoValid)) this.qs(`[data-paso="3"]`)?.classList.add("bloqueado");
-
-    // Activo actual
-    this.qs(`[data-paso="${numeroPaso}"]`)?.classList.add("activo");
-
-    // Mostrar contenido del paso
-    this.qsa(".form-paso").forEach(p => p.classList.remove("activo"));
-    this.qs(`#paso-${this.getPasoName(numeroPaso)}`)?.classList.add("activo");
-
-    // Subpestaña por defecto
-    if (numeroPaso === 1) this.mostrarPestanaInterna("familiar-1");
-    if (numeroPaso === 2) this.mostrarPestanaInterna("afectado-1");
-
-    // Resumen en paso 3
-    if (numeroPaso === 3) this.refrescarResumen();
-
-    this.actualizarUIEstado();
-  }
-
-  getPasoName(n){ return ({1:"familiar",2:"afectado",3:"confirmacion"})[n]; }
-
-  mostrarPestanaInterna(id) {
-    this.qsa(".pestana-interna").forEach(p => p.classList.remove("activa"));
-    this.qsa(`.pestana-interna[data-pestana="${id}"]`)?.classList.add("activa");
-    this.qsa(".contenido-pestana").forEach(c => c.classList.remove("activa"));
-    this.qs(`#${id}`)?.classList.add("activa");
-  }
-
-  validarFamiliar() {
-    const ok =
-      this.qs("#famNombre")?.value?.trim() &&
-      this.qs("#famApellidos")?.value?.trim() &&
-      this.qs("#famTelefono")?.value?.trim();
-
-    if (!ok) {
-      alert("⚠️ Completa Nombre, Apellidos y Teléfono del Familiar.");
-      this.familiarValid = false;
-      this.actualizarUIEstado();
-      return;
+        // Mostrar primera pestaña interna por defecto
+        if (numeroPaso === 1) {
+            this.mostrarPestanaInterna('familiar-1');
+        } else if (numeroPaso === 2) {
+            this.mostrarPestanaInterna('afectado-1');
+        }
     }
 
-    this.familiarValid = true;
-    alert("✅ Familiar validado correctamente.");
-    this.actualizarUIEstado();
-  }
-
-  validarAfectado() {
-    if (!this.familiarValid) {
-      alert("⚠️ Primero valida el Familiar.");
-      return;
+    getPasoName(numero) {
+        const nombres = {1: 'familiar', 2: 'afectado', 3: 'confirmacion'};
+        return nombres[numero];
     }
 
-    const ok =
-      this.qs("#afeNombre")?.value?.trim() &&
-      this.qs("#afeApellidos")?.value?.trim();
-
-    if (!ok) {
-      alert("⚠️ Completa Nombre y Apellidos del Afectado.");
-      this.afectadoValid = false;
-      this.actualizarUIEstado();
-      return;
+    mostrarPestanaInterna(pestanaId) {
+        // Ocultar todas las pestañas internas
+        document.querySelectorAll('.pestana-interna').forEach(p => {
+            p.classList.remove('activa');
+        });
+        document.querySelectorAll('.contenido-pestana').forEach(c => {
+            c.classList.remove('activa');
+        });
+        
+        // Mostrar pestaña seleccionada
+        const pestanaBtn = document.querySelector(`[data-pestana="${pestanaId}"]`);
+        const pestanaContent = document.getElementById(pestanaId);
+        
+        if (pestanaBtn && pestanaContent) {
+            pestanaBtn.classList.add('activa');
+            pestanaContent.classList.add('activa');
+        }
     }
 
-    this.afectadoValid = true;
-    alert("✅ Afectado validado correctamente.");
-    this.actualizarUIEstado();
-  }
-
-  refrescarResumen() {
-    // Familiar
-    this.qs("#rFamNombre").textContent = this.qs("#famNombre")?.value || "—";
-    this.qs("#rFamApellidos").textContent = this.qs("#famApellidos")?.value || "—";
-    this.qs("#rFamTelefono").textContent = this.qs("#famTelefono")?.value || "—";
-    this.qs("#rFamEmail").textContent = this.qs("#famEmail")?.value || "—";
-    this.qs("#rFamRelacion").textContent = this.qs("#famRelacion")?.value || "—";
-
-    // Afectado
-    this.qs("#rAfeNombre").textContent = this.qs("#afeNombre")?.value || "—";
-    this.qs("#rAfeApellidos").textContent = this.qs("#afeApellidos")?.value || "—";
-    this.qs("#rAfeDoc").textContent = this.qs("#afeDoc")?.value || "—";
-    this.qs("#rAfeEdad").textContent = this.qs("#afeEdad")?.value || "—";
-    this.qs("#rAfeEstado").textContent = this.qs("#afeEstado")?.value || "—";
-    this.qs("#rAfeNotas").textContent = this.qs("#afeNotas")?.value || "—";
-  }
-
-  guardarRegistro() {
-    if (!(this.familiarValid && this.afectadoValid)) {
-      alert("⚠️ Debes validar Familiar y Afectado antes de guardar.");
-      return;
+    validarFamiliar() {
+        const numControl = document.getElementById('Num_Control_Familiar').value;
+        const apellidos = document.getElementById('Apellidos').value;
+        const nombre = document.getElementById('Nombre').value;
+        
+        if (!numControl || !apellidos || !nombre) {
+            alert('❌ Complete los campos obligatorios del familiar');
+            return;
+        }
+        
+        alert('✅ Datos del familiar validados correctamente');
+        document.querySelector('[data-paso="1"]').classList.add('completado');
     }
 
-    // Aquí integras tu POST/PATCH real (SharePoint, API, etc.)
-    alert("💾 DEMO: Registro guardado correctamente.");
+    validarAfectado() {
+        const apellidos = document.getElementById('V_Apellidos').value;
+        const nombre = document.getElementById('V_Nombre').value;
+        const vuelo = document.getElementById('N_Vuelo').value;
+        
+        if (!apellidos || !nombre || !vuelo) {
+            alert('❌ Complete los campos obligatorios del afectado');
+            return;
+        }
+        
+        alert('✅ Datos del afectado validados correctamente');
+        document.querySelector('[data-paso="2"]').classList.add('completado');
+    }
 
-    // KPIs demo
-    this.totalFam += 1;
-    this.totalAfe += 1;
-    this.qs("#kpiFam").textContent = this.totalFam;
-    this.qs("#kpiAfe").textContent = this.totalAfe;
-
-    // Reset flujo + limpieza rápida
-    this.familiarValid = false;
-    this.afectadoValid = false;
-
-    [
-      "famNombre","famApellidos","famDNI","famTelefono","famEmail","famRelacion",
-      "afeNombre","afeApellidos","afeDoc","afeEdad","afeEstado","afeNotas"
-    ].forEach(id => { const el = this.qs("#"+id); if (el) el.value = ""; });
-
-    this.mostrarPaso(1);
-  }
-
-  actualizarUIEstado() {
-    // Guardar solo cuando ambos validados
-    const btnGuardar = this.qs("#btnGuardarFinal");
-    if (btnGuardar) btnGuardar.style.display = (this.familiarValid && this.afectadoValid) ? "inline-flex" : "none";
-
-    // Bloqueos visuales + puntero en pasos
-    this.qsa(".paso").forEach(p => {
-      const pasoNum = parseInt(p.dataset.paso || "0", 10);
-      let bloqueado = false;
-      if (pasoNum === 2 && !this.familiarValid) bloqueado = true;
-      if (pasoNum === 3 && !(this.familiarValid && this.afectadoValid)) bloqueado = true;
-      p.classList.toggle("bloqueado", bloqueado);
-      p.style.pointerEvents = bloqueado ? "none" : "auto";
-    });
-
-    // Marcar completados según flags
-    this.qs(`[data-paso="1"]`)?.classList.toggle("completado", this.familiarValid);
-    this.qs(`[data-paso="2"]`)?.classList.toggle("completado", this.afectadoValid);
-  }
+    guardarRegistro() {
+        alert('💾 DEMO: Registro guardado correctamente en SharePoint\n\nLos datos se han almacenado en las listas correspondientes.');
+        this.mostrarPaso(1); // Volver al inicio
+        
+        // Limpiar formulario
+        document.querySelectorAll('input, select').forEach(element => {
+            if (element.type === 'checkbox') {
+                element.checked = false;
+            } else if (element.type === 'select-multiple') {
+                Array.from(element.options).forEach(option => option.selected = false);
+            } else {
+                element.value = '';
+            }
+        });
+    }
 }
 
-document.addEventListener("DOMContentLoaded", () => { window.app = new DemoApp(); });
+// Inicializar cuando cargue la página
+document.addEventListener('DOMContentLoaded', () => {
+    window.app = new DemoApp();
+});
