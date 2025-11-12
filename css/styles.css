@@ -355,3 +355,69 @@ select[multiple] {
         max-width: none;
     }
 }
+/* ======== VISIBILIDAD CONTROLADA POR JS ======== */
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+.form-paso { display: none; }
+.form-paso.activo { display: block; }
+
+/* ======== SUB-PESTAÑAS (Familiar/Afectado) ======== */
+.pestanas-internas {
+  display: flex;
+  gap: 8px;
+  border-bottom: 2px solid #ecf0f1;
+  margin-bottom: 16px;
+}
+.pestana-interna {
+  padding: 10px 16px;
+  border: 2px solid transparent;
+  background: #ecf0f1;
+  border-radius: 6px 6px 0 0;
+  cursor: pointer;
+  font-weight: 600;
+  color: #7f8c8d;
+  transition: all .2s ease;
+}
+.pestana-interna:hover { background: #dfe6e9; }
+.pestana-interna.activa {
+  background: #fff;
+  color: #3498db;
+  border-color: #3498db;
+  border-bottom-color: #fff;
+}
+.contenido-pestana { display: none; }
+.contenido-pestana.activa { display: block; }
+
+/* ======== ESTADOS DEL STEPPER (CLASE .paso) ======== */
+/* Tus tarjetas ya usan .step; el JS también añade .paso + estados */
+.paso.activo,
+.step.active { /* coherencia con tu estilo actual */
+  background-color: #3498db;
+  color: #fff;
+  border-color: #2980b9;
+  box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+}
+.paso.completado {
+  background: #eafaf1;
+  border-color: #27ae60;
+  color: #27ae60;
+}
+.paso.bloqueado {
+  opacity: .5;
+  pointer-events: none;
+}
+
+/* Si usas la versión con numerito y texto dentro del paso */
+.numero-paso {
+  width: 36px; height: 36px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  margin-bottom: 6px; font-weight: 700;
+  background: #dcdfe4; color: #2c3e50;
+}
+.paso.activo .numero-paso { background: #fff; color: #3498db; }
+.paso.completado .numero-paso { background: #27ae60; color: #fff; }
+.texto-paso { display: block; font-weight: 600; }
+
+/* ======== BOTÓN GUARDAR: OCULTO BASE ======== */
+#btnGuardarFinal { display: none; }
