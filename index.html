@@ -1,348 +1,342 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Sistema de Gestión - Emerg</title>
-  <link rel="stylesheet" href="css/styles.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Emergencia Aérea • Altas / Consultas / Dashboard</title>
+  <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
-  <div id="app">
-    <!-- HEADER -->
-    <div class="header app-header">
-      <h1>Sistema de Gestión - Emerg</h1>
-      <div class="subtitle user-info">Agente - AENA</div>
+<div id="app">
+  <!-- HEADER -->
+  <header class="app-header">
+    <h1>Gestión de Altas</h1>
+    <div class="user-info">Demo • Madrid 112</div>
+  </header>
 
-      <!-- Pestañas principales -->
-      <div class="tabs main-tabs">
-        <button class="tab active tab-btn" data-tab="Altas">Altas</button>
-        <button class="tab tab-btn" data-tab="Consultas">Consultas/Modificaciones</button>
-        <button class="tab tab-btn" data-tab="Dashboard">Dashboard</button>
-      </div>
-    </div>
+  <!-- TABS PRINCIPALES -->
+  <nav class="main-tabs">
+    <button class="tab-btn active" data-tab="Altas" type="button">Altas</button>
+    <button class="tab-btn" data-tab="Consultas" type="button">Consultas/Modificaciones</button>
+    <button class="tab-btn" data-tab="Dashboard" type="button">Dashboard</button>
+  </nav>
 
-    <main class="app-main container">
-      <!-- ================== TAB ALTAS ================== -->
-      <section id="Altas" class="tab-content active">
-        <div class="alta-container">
-          <h2>Registro Completo - Sistema de Validación</h2>
-          <!-- Meta de registro -->
-<div class="form-grid" style="padding: 1.25rem 2rem 0;">
-  <div class="form-group">
-    <label for="usu" class="required">Usu</label>
-    <input id="usu" class="form-input" type="text" placeholder="usuario/id" />
-  </div>
-  <div class="form-group">
-    <label for="fecha-registro" class="required">Fecha_Registro</label>
-    <input id="fecha-registro" class="form-input" type="text" placeholder="AAAA-MM-DD HH:MM" disabled />
-  </div>
-</div>
+  <main class="app-main">
+    <!-- ================== TAB ALTAS ================== -->
+    <section id="Altas" class="tab-content active">
+      <div class="alta-container">
+        <h2>Alta de familiar y afectado</h2>
 
-          <!-- Barra de acciones (Guardar aparece solo cuando toca) -->
-          <div class="form-header acciones-paso">
-            <div class="form-title">Altas de Familiar y Afectado</div>
-            <button class="save-button btn-guardar" id="btnGuardarFinal">Guardar</button>
+        <!-- META BARRA (Usu + Fecha_Registro) -->
+        <div class="form-grid" style="padding: 1.25rem 2rem 0;">
+          <div class="form-group">
+            <label for="usu" class="required">Usu</label>
+            <input id="usu" class="form-input" type="text" placeholder="usuario/id" />
+          </div>
+          <div class="form-group">
+            <label for="fecha-registro" class="required">Fecha_Registro</label>
+            <input id="fecha-registro" class="form-input" type="text" placeholder="DD-MM-AAAA" />
+          </div>
+        </div>
+
+        <!-- STEPPER -->
+        <div class="progreso-pasos">
+          <div class="paso activo" data-paso="1">
+            <div class="numero-paso">1</div>
+            <div class="texto-paso">Familiar</div>
+          </div>
+          <div class="paso bloqueado" data-paso="2">
+            <div class="numero-paso">2</div>
+            <div class="texto-paso">Afectado</div>
+          </div>
+          <div class="paso bloqueado" data-paso="3">
+            <div class="numero-paso">3</div>
+            <div class="texto-paso">Confirmación</div>
+          </div>
+        </div>
+
+        <!-- ===== PASO 1: FAMILIAR ===== -->
+        <div id="paso-familiar" class="form-paso activo">
+          <h3>Datos del familiar</h3>
+
+          <!-- Subpestañas del familiar -->
+          <div class="pestanas-internas">
+            <button class="pestana-interna activa" data-pestana="familiar-1" type="button">Identificación</button>
+            <button class="pestana-interna" data-pestana="familiar-2" type="button">Contacto</button>
           </div>
 
-          <!-- Stepper -->
-          <div class="steps progreso-pasos">
-            <div class="step paso activo" data-paso="1">
-              <div class="numero-paso">1</div>
-              <div class="texto-paso">Datos Familiar</div>
-            </div>
-            <div class="step paso bloqueado" data-paso="2">
-              <div class="numero-paso">2</div>
-              <div class="texto-paso">Datos Afectado</div>
-            </div>
-            <div class="step paso bloqueado" data-paso="3">
-              <div class="numero-paso">3</div>
-              <div class="texto-paso">Confirmación</div>
+          <!-- Familiar: Identificación -->
+          <div id="familiar-1" class="contenido-pestana activa">
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="control-familiar">Nº Control Familiar</label>
+                <input type="text" id="control-familiar" class="form-input" placeholder="Ej: FAM-001">
+              </div>
+
+              <div class="form-group">
+                <label for="apellidos" class="required">Apellidos</label>
+                <input type="text" id="apellidos" class="form-input" placeholder="Apellidos del familiar">
+              </div>
+
+              <div class="form-group">
+                <label for="nombre" class="required">Nombre</label>
+                <input type="text" id="nombre" class="form-input" placeholder="Nombre del familiar">
+              </div>
+
+              <div class="form-group">
+                <label for="edad">Edad</label>
+                <input type="number" id="edad" class="form-input" placeholder="Edad">
+              </div>
+
+              <div class="form-group">
+                <label for="relacion">Relación con Afectado</label>
+                <select id="relacion" class="form-input">
+                  <option value="">Seleccionar relación...</option>
+                  <option>Padre/Madre</option>
+                  <option>Hijo/Hija</option>
+                  <option>Cónyuge</option>
+                  <option>Hermano/Hermana</option>
+                  <option>Otro familiar</option>
+                  <option>Amigo</option>
+                  <option>Otro</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="dni">DNI/Pasaporte</label>
+                <input type="text" id="dni" class="form-input" placeholder="Número de documento">
+              </div>
+
+              <div class="form-group">
+                <label for="nacionalidad">Nacionalidad</label>
+                <input type="text" id="nacionalidad" class="form-input" placeholder="Nacionalidad">
+              </div>
+
+              <div class="form-group">
+                <label for="cod-familiar" class="required">COD_FAMILIAR</label>
+                <input type="text" id="cod-familiar" class="form-input" placeholder="Código de la familia">
+              </div>
             </div>
           </div>
 
-          <!-- ===== PASO 1: FAMILIAR ===== -->
-          <div id="paso-familiar" class="form-section form-paso activo">
-            <!-- Subpestañas internas (opcionales) -->
-            <div class="pestanas-internas">
-              <button class="pestana-interna activa" data-pestana="familiar-1">Identificación</button>
-              <button class="pestana-interna" data-pestana="familiar-2">Contacto</button>
-            </div>
-
-            <!-- Familiar: Identificación -->
-            <div id="familiar-1" class="contenido-pestana activa">
-              <div class="form-row form-grid">
-                <div class="form-group">
-                  <label for="control-familiar" class="required">Nº Control Familiar</label>
-                  <input type="text" id="control-familiar" class="form-input" placeholder="Ej: FAM-001">
-                </div>
+          <!-- Familiar: Contacto -->
+          <div id="familiar-2" class="contenido-pestana">
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" class="form-input" placeholder="email@ejemplo.com">
               </div>
 
-              <div class="form-row form-grid">
-                <div class="form-group">
-                  <label for="apellidos" class="required">Apellidos</label>
-                  <input type="text" id="apellidos" class="form-input" placeholder="Apellidos del familiar">
-                </div>
-                <div class="form-group">
-                  <label for="nombre" class="required">Nombre</label>
-                  <input type="text" id="nombre" class="form-input" placeholder="Nombre del familiar">
-                </div>
+              <div class="form-group">
+                <label for="telefono-principal" class="required">Teléfono Principal</label>
+                <input type="tel" id="telefono-principal" class="form-input" placeholder="+34 XXX XXX XXX">
               </div>
 
-              <div class="form-row form-grid">
-                <div class="form-group">
-                  <label for="edad">Edad</label>
-                  <input type="number" id="edad" class="form-input" placeholder="Edad">
-                </div>
-                <div class="form-group">
-                  <label for="relacion">Relación con Afectado</label>
-                  <select id="relacion" class="form-input">
-                    <option>Seleccionar relación...</option>
-                    <option>Padre/Madre</option>
-                    <option>Hijo/Hija</option>
-                    <option>Cónyuge</option>
-                    <option>Hermano/Hermana</option>
-                    <option>Otro familiar</option>
-                    <option>Amigo</option>
-                    <option>Otro</option>
-                  </select>
-                </div>
+              <div class="form-group">
+                <label for="telefono-secundario">Teléfono Secundario</label>
+                <input type="tel" id="telefono-secundario" class="form-input" placeholder="Teléfono adicional">
               </div>
 
-              <div class="form-row form-grid">
-                <div class="form-group">
-                  <label for="dni">DNI/Pasaporte</label>
-                  <input type="text" id="dni" class="form-input" placeholder="Número de documento">
-                </div>
-                <div class="form-group">
-                  <label for="nacionalidad">Nacionalidad</label>
-                  <input type="text" id="nacionalidad" class="form-input" placeholder="Nacionalidad">
-                </div>
-              </div>
-            </div>
-            <div class="form-group">
-  <label for="cod-familiar" class="required">COD_FAMILIAR</label>
-  <input id="cod-familiar" class="form-input" type="text" placeholder="Código de la familia" />
-</div>
-
-
-            <!-- Familiar: Contacto -->
-            <div id="familiar-2" class="contenido-pestana">
-              <div class="form-row form-grid">
-                <div class="form-group">
-                  <label for="email">Email</label>
-                  <input type="email" id="email" class="form-input" placeholder="email@ejemplo.com">
-                </div>
+              <div class="form-group">
+                <label for="direccion-permanente">Dirección Permanente</label>
+                <input type="text" id="direccion-permanente" class="form-input" placeholder="Dirección completa">
               </div>
 
-              <div class="form-row form-grid">
-                <div class="form-group">
-                  <label for="telefono-principal">Teléfono Principal</label>
-                  <input type="tel" id="telefono-principal" class="form-input" placeholder="+34 XXX XXX XXX">
-                </div>
-                <div class="form-group">
-                  <label for="telefono-secundario">Teléfono Secundario</label>
-                  <input type="tel" id="telefono-secundario" class="form-input" placeholder="Teléfono adicional">
-                </div>
+              <div class="form-group">
+                <label for="direccion-temporal">Dirección Temporal</label>
+                <input type="text" id="direccion-temporal" class="form-input" placeholder="Dirección temporal">
               </div>
 
-              <div class="form-row form-grid">
-                <div class="form-group">
-                  <label for="direccion-permanente">Dirección Permanente</label>
-                  <input type="text" id="direccion-permanente" class="form-input" placeholder="Dirección completa">
-                </div>
+              <div class="form-group checkbox-wrap">
+                <label class="checkbox-label">
+                  <input type="checkbox" id="portavoz">
+                  Es Portavoz Familiar
+                </label>
               </div>
 
-              <div class="form-row form-grid">
-                <div class="form-group">
-                  <label for="direccion-temporal">Dirección Temporal</label>
-                  <input type="text" id="direccion-temporal" class="form-input" placeholder="Dirección temporal">
-                </div>
+              <div class="form-group">
+                <label for="nombre-portavoz">Nombre Portavoz (si aplica)</label>
+                <input type="text" id="nombre-portavoz" class="form-input" placeholder="Nombre del portavoz">
               </div>
 
-              <div class="checkbox-group" style="padding:0 2rem 1rem;">
-                <input type="checkbox" id="portavoz">
-                <label for="portavoz">Es Portavoz Familiar</label>
+              <div class="form-group">
+                <label for="necesidades-especiales">Necesidades Especiales</label>
+                <select id="necesidades-especiales" class="form-input" multiple>
+                  <option>ENFERMEDAD</option>
+                  <option>PMR</option>
+                  <option>HMENTAL</option>
+                  <option>NIÑOS</option>
+                  <option>ANCIANO/A</option>
+                  <option>RELIGIOSOS</option>
+                  <option>IDIOMAS</option>
+                </select>
               </div>
 
-              <div class="form-row form-grid">
-                <div class="form-group">
-                  <label for="nombre-portavoz">Nombre Portavoz (si aplica)</label>
-                  <input type="text" id="nombre-portavoz" class="form-input" placeholder="Nombre del portavoz">
-                </div>
-              </div>
-
-              <div class="form-row form-grid">
-                <div class="form-group">
-                  <label for="necesidades-especiales">Necesidades Especiales</label>
-                  <select id="necesidades-especiales" class="form-input" multiple>
-                    <option>ENFERMEDAD</option>
-                    <option>PMR</option>
-                    <option>HMENTAL</option>
-                    <option>NIÑOS</option>
-                    <option>ANCIANO/A</option>
-                    <option>RELIGIOSOS</option>
-                    <option>IDIOMAS</option>
-                  </select>
-                </div>
-                <div class="form-group">
-                  <label for="grupo-psicosocial">Grupo Psicosocial</label>
-                  <select id="grupo-psicosocial" class="form-input">
-                    <option>Seleccionar grupo...</option>
-                    <option>SSOCIAL</option>
-                    <option>CRE</option>
-                    <option>SUMMA112</option>
-                    <option>OTROS</option>
-                  </select>
-                </div>
-              </div>
-
-              <div class="form-row form-grid">
-                <div class="form-group">
-                  <label for="codigo-familiar">Código Familiar</label>
-                  <input type="text" id="codigo-familiar" class="form-input" placeholder="Código de relación">
-                </div>
-                <div class="form-group">
-                  <label for="codigo-victima">Código Víctima Relación</label>
-                  <input type="text" id="codigo-victima" class="form-input" placeholder="Código de víctima relacionada">
-                </div>
+              <div class="form-group">
+                <label for="grupo-psicosocial">Grupo Psicosocial</label>
+                <select id="grupo-psicosocial" class="form-input">
+                  <option value="">Seleccionar grupo...</option>
+                  <option>SSOCIAL</option>
+                  <option>CRE</option>
+                  <option>SUMMA112</option>
+                  <option>OTROS</option>
+                </select>
               </div>
             </div>
 
-            <!-- Acciones paso 1 -->
             <div class="acciones-paso">
               <div></div>
               <div style="display:flex; gap:.75rem;">
-                <button id="btnValidarFamiliar" class="btn-validar">Validar Familiar</button>
-                <button id="btnSiguienteAfectado" class="btn-siguiente">Ir a Afectado</button>
+                <button id="btnValidarFamiliar" class="btn-validar" type="button">Validar Familiar</button>
+                <button id="btnSiguienteAfectado" class="btn-siguiente" type="button">Ir a Afectado</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== PASO 2: AFECTADO ===== -->
+        <div id="paso-afectado" class="form-paso">
+          <h3>Datos del afectado</h3>
+
+          <div class="pestanas-internas">
+            <button class="pestana-interna activa" data-pestana="afectado-1" type="button">Identificación</button>
+            <button class="pestana-interna" data-pestana="afectado-2" type="button">Situación</button>
+          </div>
+
+          <div id="afectado-1" class="contenido-pestana activa">
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="afeNombre" class="required">Nombre</label>
+                <input id="afeNombre" class="form-input" type="text" placeholder="Nombre"/>
+              </div>
+              <div class="form-group">
+                <label for="afeApellidos" class="required">Apellidos</label>
+                <input id="afeApellidos" class="form-input" type="text" placeholder="Apellidos"/>
+              </div>
+              <div class="form-group">
+                <label for="afeDoc">Documento</label>
+                <input id="afeDoc" class="form-input" type="text" placeholder="Pasaporte / DNI"/>
+              </div>
+              <div class="form-group">
+                <label for="cod-victima-relacion" class="required">COD_VICTIMA_RELACION</label>
+                <input id="cod-victima-relacion" class="form-input" type="text" placeholder="Código relación FAM-VIC" list="relaciones-list"/>
+                <datalist id="relaciones-list">
+                  <option value="PADRE-HIJO"></option>
+                  <option value="MADRE-HIJO"></option>
+                  <option value="CONYUGE"></option>
+                  <option value="HERMANO"></option>
+                  <option value="OTRA"></option>
+                </datalist>
               </div>
             </div>
           </div>
 
-          <!-- ===== PASO 2: AFECTADO ===== -->
-          <div id="paso-afectado" class="form-section form-paso">
-            <h3>Datos del Afectado</h3>
-
-            <div class="pestanas-internas">
-              <button class="pestana-interna activa" data-pestana="afectado-1">Identificación</button>
-              <button class="pestana-interna" data-pestana="afectado-2">Situación</button>
-            </div>
-
-            <div id="afectado-1" class="contenido-pestana activa">
-              <div class="form-row form-grid">
-                <div class="form-group">
-                  <label for="afeNombre" class="required">Nombre</label>
-                  <input id="afeNombre" class="form-input" type="text" placeholder="Nombre"/>
-                </div>
-                <div class="form-group">
-                  <label for="afeApellidos" class="required">Apellidos</label>
-                  <input id="afeApellidos" class="form-input" type="text" placeholder="Apellidos"/>
-                </div>
-                <div class="form-group">
-                  <label for="afeDoc">Documento</label>
-                  <input id="afeDoc" class="form-input" type="text" placeholder="Pasaporte / DNI"/>
-                </div>
+          <div id="afectado-2" class="contenido-pestana">
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="afeEdad">Edad</label>
+                <input id="afeEdad" class="form-input" type="number" min="0" max="120"/>
               </div>
-            </div>
-
-            <div id="afectado-2" class="contenido-pestana">
-              <div class="form-row form-grid">
-                <div class="form-group">
-                  <label for="afeEdad">Edad</label>
-                  <input id="afeEdad" class="form-input" type="number" min="0" max="120"/>
-                </div>
-                <div class="form-group">
-                  <label for="afeEstado">Estado</label>
-                  <input id="afeEstado" class="form-input" type="text" placeholder="Localizado / Desaparecido / Lesionado..."/>
-                </div>
-                <div class="form-group">
-                  <label for="afeNotas">Notas</label>
-                  <input id="afeNotas" class="form-input" type="text" placeholder="Observaciones"/>
-                </div>
+              <div class="form-group">
+                <label for="afeEstado">Estado</label>
+                <input id="afeEstado" class="form-input" type="text" placeholder="Localizado / Desaparecido / Lesionado..."/>
+              </div>
+              <div class="form-group">
+                <label for="afeNotas">Notas</label>
+                <input id="afeNotas" class="form-input" type="text" placeholder="Observaciones"/>
               </div>
             </div>
 
             <div class="acciones-paso">
-              <button class="btn-anterior" onclick="window.app.mostrarPaso(1)">Volver a Familiar</button>
+              <button class="btn-anterior" onclick="window.app.mostrarPaso(1)" type="button">Volver a Familiar</button>
               <div style="display:flex; gap:.75rem;">
-                <button id="btnValidarAfectado" class="btn-validar">Validar Afectado</button>
-                <button id="btnSiguienteConfirmacion" class="btn-siguiente">Ir a Confirmación</button>
+                <button id="btnValidarAfectado" class="btn-validar" type="button">Validar Afectado</button>
+                <button id="btnSiguienteConfirmacion" class="btn-siguiente" type="button">Ir a Confirmación</button>
               </div>
             </div>
           </div>
+        </div>
 
-          <!-- ===== PASO 3: CONFIRMACIÓN ===== -->
-          <div id="paso-confirmacion" class="form-section form-paso">
-            <h3>Confirmación de datos</h3>
+        <!-- ===== PASO 3: CONFIRMACIÓN ===== -->
+        <div id="paso-confirmacion" class="form-paso">
+          <h3>Confirmación de datos</h3>
 
-            <div class="resumen-datos">
-              <div class="resumen-seccion">
-                <h4>Familiar</h4>
-                <div class="resumen-grid">
-                  <div class="resumen-item"><strong>Nombre:</strong> <span id="rFamNombre">—</span></div>
-                  <div class="resumen-item"><strong>Apellidos:</strong> <span id="rFamApellidos">—</span></div>
-                  <div class="resumen-item"><strong>Teléfono:</strong> <span id="rFamTelefono">—</span></div>
-                  <div class="resumen-item"><strong>Email:</strong> <span id="rFamEmail">—</span></div>
-                  <div class="resumen-item"><strong>Relación:</strong> <span id="rFamRelacion">—</span></div>
-                </div>
-                <!-- Dentro de la sección Familiar -->
-                <div class="resumen-item"><strong>COD_FAMILIAR:</strong> <span id="rCodFamiliar">—</span></div>
-             </div>
-
-              <div class="resumen-seccion">
-                <!-- En cualquier sitio del resumen (por ejemplo arriba del todo) -->
+          <div class="resumen-datos">
+            <div class="resumen-seccion">
+              <h4>Meta</h4>
+              <div class="resumen-grid">
                 <div class="resumen-item"><strong>Usu:</strong> <span id="rUsu">—</span></div>
                 <div class="resumen-item"><strong>Fecha_Registro:</strong> <span id="rFechaRegistro">—</span></div>
-                <h4>Afectado</h4>
-                <div class="resumen-grid">
-                  <div class="resumen-item"><strong>Nombre:</strong> <span id="rAfeNombre">—</span></div>
-                  <div class="resumen-item"><strong>Apellidos:</strong> <span id="rAfeApellidos">—</span></div>
-                  <div class="resumen-item"><strong>Documento:</strong> <span id="rAfeDoc">—</span></div>
-                  <div class="resumen-item"><strong>Edad:</strong> <span id="rAfeEdad">—</span></div>
-                  <div class="resumen-item"><strong>Estado:</strong> <span id="rAfeEstado">—</span></div>
-                  <div class="resumen-item"><strong>Notas:</strong> <span id="rAfeNotas">—</span></div>
-                </div>
-                <!-- Dentro de la sección Afectado -->
+              </div>
+            </div>
+
+            <div class="resumen-seccion">
+              <h4>Familiar</h4>
+              <div class="resumen-grid">
+                <div class="resumen-item"><strong>Nombre:</strong> <span id="rFamNombre">—</span></div>
+                <div class="resumen-item"><strong>Apellidos:</strong> <span id="rFamApellidos">—</span></div>
+                <div class="resumen-item"><strong>Teléfono:</strong> <span id="rFamTelefono">—</span></div>
+                <div class="resumen-item"><strong>Email:</strong> <span id="rFamEmail">—</span></div>
+                <div class="resumen-item"><strong>Relación:</strong> <span id="rFamRelacion">—</span></div>
+                <div class="resumen-item"><strong>COD_FAMILIAR:</strong> <span id="rCodFamiliar">—</span></div>
+              </div>
+            </div>
+
+            <div class="resumen-seccion">
+              <h4>Afectado</h4>
+              <div class="resumen-grid">
+                <div class="resumen-item"><strong>Nombre:</strong> <span id="rAfeNombre">—</span></div>
+                <div class="resumen-item"><strong>Apellidos:</strong> <span id="rAfeApellidos">—</span></div>
+                <div class="resumen-item"><strong>Documento:</strong> <span id="rAfeDoc">—</span></div>
+                <div class="resumen-item"><strong>Edad:</strong> <span id="rAfeEdad">—</span></div>
+                <div class="resumen-item"><strong>Estado:</strong> <span id="rAfeEstado">—</span></div>
+                <div class="resumen-item"><strong>Notas:</strong> <span id="rAfeNotas">—</span></div>
                 <div class="resumen-item"><strong>COD_VICTIMA_RELACION:</strong> <span id="rCodVictimaRelacion">—</span></div>
               </div>
             </div>
+          </div>
 
-            <div class="acciones-paso">
-              <button class="btn-anterior" onclick="window.app.mostrarPaso(2)">Volver a Afectado</button>
-              <button id="btnGuardarFinal" class="btn-guardar">Guardar</button>
+          <div class="acciones-paso">
+            <button class="btn-anterior" onclick="window.app.mostrarPaso(2)" type="button">Volver a Afectado</button>
+            <button id="btnGuardarFinal" class="btn-guardar" type="button">Guardar</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================== TAB CONSULTAS ================== -->
+    <section id="Consultas" class="tab-content">
+      <div class="alta-container">
+        <h2>Consultas / Modificaciones</h2>
+        <div style="padding: 2rem;">
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="required" for="txtBuscar">Buscar</label>
+              <input id="txtBuscar" class="form-input" placeholder="Nombre / Apellidos / DNI / Teléfono" />
             </div>
           </div>
+          <div id="consultaResultados">Resultados aquí (demo)</div>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <!-- ================== TAB CONSULTAS ================== -->
-      <section id="Consultas" class="tab-content">
-        <div class="alta-container">
-          <h2>Consultas / Modificaciones</h2>
-          <div style="padding:2rem;">
-            <div class="form-grid">
-              <div class="form-group">
-                <label for="txtBuscar" class="required">Buscar</label>
-                <input id="txtBuscar" class="form-input" placeholder="Nombre / Apellidos / DNI / Teléfono"/>
-              </div>
-            </div>
-            <div id="consultaResultados">Resultados aquí (demo)</div>
-          </div>
+    <!-- ================== TAB DASHBOARD ================== -->
+    <section id="Dashboard" class="tab-content">
+      <div class="alta-container">
+        <h2>Dashboard</h2>
+        <div style="padding: 2rem;">
+          <p>Total familiares: <strong id="kpiFam">0</strong></p>
+          <p>Total afectados: <strong id="kpiAfe">0</strong></p>
         </div>
-      </section>
+      </div>
+    </section>
+  </main>
 
-      <!-- ================== TAB DASHBOARD ================== -->
-      <section id="Dashboard" class="tab-content">
-        <div class="alta-container">
-          <h2>Dashboard</h2>
-          <div style="padding:2rem;">
-            <p>Total familiares: <strong id="kpiFam">0</strong></p>
-            <p>Total afectados: <strong id="kpiAfe">0</strong></p>
-          </div>
-        </div>
-      </section>
-    </main>
-  </div>
+  <footer class="app-footer">
+    © Demo — Flujo de validación y guardado
+  </footer>
+</div>
 
-  <script src="js/app.js" defer></script>
+<script src="js/app.js" defer></script>
 </body>
 </html>
