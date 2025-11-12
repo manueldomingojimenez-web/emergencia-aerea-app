@@ -19,6 +19,30 @@ class DemoApp {
     this.mostrarPaso(1);
     this.actualizarUIEstado();
     console.log("✅ Sistema de Gestión Emerg inicializado");
+    this.autorellenarUsu();
+    this.touchFechaRegistro(); //setea fecha/hora actual
+    autorrellenarUsu() {
+  // Prioridad: ?user= en la URL > localStorage > 'demo-user'
+  const url = new URL(window.location.href);
+  const qUser = url.searchParams.get("user");
+  const lsUser = localStorage.getItem("app_user");
+  const user = qUser || lsUser || "demo-user";
+  const usu = this.qs("#usu");
+  if (usu) {
+    usu.value = user;
+    // guarda para siguientes sesiones
+    localStorage.setItem("app_user", user);
+  }
+}
+
+touchFechaRegistro() {
+  const now = new Date();
+  const pad = n => String(n).padStart(2, "0");
+  const stamp = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
+  const f = this.qs("#fecha-registro");
+  if (f) f.value = stamp;
+}
+
   }
 
   // Helpers de selección
@@ -206,6 +230,15 @@ class DemoApp {
     this.setText("#rAfeEdad",    this.qs("#afeEdad")?.value || "—");
     this.setText("#rAfeEstado",  this.qs("#afeEstado")?.value || "—");
     this.setText("#rAfeNotas",   this.qs("#afeNotas")?.value || "—");
+    refrescarResumen() {
+  // ...lo que ya tienes...
+  // Nuevos
+  this.setText("#rUsu", this.qs("#usu")?.value || "—");
+  this.setText("#rFechaRegistro", this.qs("#fecha-registro")?.value || "—");
+  this.setText("#rCodFamiliar", this.qs("#cod-familiar")?.value || "—");
+  this.setText("#rCodVictimaRelacion", this.qs("#cod-victima-relacion")?.value || "—");
+}
+
   }
 
   setText(sel, val) { const el = this.qs(sel); if (el) el.textContent = val || "—"; }
@@ -215,6 +248,7 @@ class DemoApp {
     if (!(this.familiarValid && this.afectadoValid)) {
       alert("⚠️ Debes validar Familiar y Afectado antes de guardar.");
       return;
+      this.touchFechaRegistro();
     }
 
     // Aquí integras la llamada real (SharePoint / API / Power Automate…)
@@ -254,6 +288,21 @@ class DemoApp {
   actualizarUIEstado() {
     // Mostrar/ocultar Guardar
     if (this.saveBtn) this.saveBtn.style.display = (this.familiarValid && this.afectadoValid) ? "inline-flex" : "none";
+    [
+  // Mantén Usu (no lo tocamos)
+  "fecha-registro",           // se repondrá con touchFechaRegistro() en la siguiente alta
+  "cod-familiar",
+  "cod-victima-relacion",
+  // ... (el resto que ya limpiabas)
+  "control-familiar","apellidos","nombre","edad","relacion","dni","nacionalidad",
+  "email","telefono-principal","telefono-secundario","direccion-permanente","direccion-temporal",
+  "nombre-portavoz","codigo-familiar","codigo-victima",  // si aún existían legacy
+  "afeNombre","afeApellidos","afeDoc","afeEdad","afeEstado","afeNotas",
+  "famNombre","famApellidos","famTelefono","famEmail","famRelacion"
+].forEach(id => { const el = this.qs("#"+id); if (el) el.value = ""; });
+
+this.touchFechaRegistro(); // fecha nueva para la siguiente ficha
+
 
     // Bloqueos visuales y puntero
     this.stepItems.forEach(p => {
