@@ -26,6 +26,17 @@
       <section id="Altas" class="tab-content active">
         <div class="alta-container">
           <h2>Registro Completo - Sistema de Validación</h2>
+          <!-- Meta de registro -->
+<div class="form-grid" style="padding: 1.25rem 2rem 0;">
+  <div class="form-group">
+    <label for="usu" class="required">Usu</label>
+    <input id="usu" class="form-input" type="text" placeholder="usuario/id" />
+  </div>
+  <div class="form-group">
+    <label for="fecha-registro" class="required">Fecha_Registro</label>
+    <input id="fecha-registro" class="form-input" type="text" placeholder="AAAA-MM-DD HH:MM" disabled />
+  </div>
+</div>
 
           <!-- Barra de acciones (Guardar aparece solo cuando toca) -->
           <div class="form-header acciones-paso">
@@ -108,6 +119,11 @@
                 </div>
               </div>
             </div>
+            <div class="form-group">
+  <label for="cod-familiar" class="required">COD_FAMILIAR</label>
+  <input id="cod-familiar" class="form-input" type="text" placeholder="Código de la familia" />
+</div>
+
 
             <!-- Familiar: Contacto -->
             <div id="familiar-2" class="contenido-pestana">
@@ -268,9 +284,14 @@
                   <div class="resumen-item"><strong>Email:</strong> <span id="rFamEmail">—</span></div>
                   <div class="resumen-item"><strong>Relación:</strong> <span id="rFamRelacion">—</span></div>
                 </div>
-              </div>
+                <!-- Dentro de la sección Familiar -->
+                <div class="resumen-item"><strong>COD_FAMILIAR:</strong> <span id="rCodFamiliar">—</span></div>
+             </div>
 
               <div class="resumen-seccion">
+                <!-- En cualquier sitio del resumen (por ejemplo arriba del todo) -->
+                <div class="resumen-item"><strong>Usu:</strong> <span id="rUsu">—</span></div>
+                <div class="resumen-item"><strong>Fecha_Registro:</strong> <span id="rFechaRegistro">—</span></div>
                 <h4>Afectado</h4>
                 <div class="resumen-grid">
                   <div class="resumen-item"><strong>Nombre:</strong> <span id="rAfeNombre">—</span></div>
@@ -280,6 +301,8 @@
                   <div class="resumen-item"><strong>Estado:</strong> <span id="rAfeEstado">—</span></div>
                   <div class="resumen-item"><strong>Notas:</strong> <span id="rAfeNotas">—</span></div>
                 </div>
+                <!-- Dentro de la sección Afectado -->
+                <div class="resumen-item"><strong>COD_VICTIMA_RELACION:</strong> <span id="rCodVictimaRelacion">—</span></div>
               </div>
             </div>
 
