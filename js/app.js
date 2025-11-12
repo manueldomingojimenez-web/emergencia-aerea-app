@@ -1,74 +1,67 @@
-// app.js — versión unificada con gating, validaciones y compatibilidad con selectores "viejos" y "nuevos"
-
 class DemoApp {
   constructor() {
     this.pasoActual = 1;
     this.familiarValid = false;
     this.afectadoValid = false;
 
-    // KPIs demo (si los usas en Dashboard)
+    // KPIs demo
     this.totalFam = 0;
     this.totalAfe = 0;
   }
 
   init() {
     this.setupEventListeners();
-    // Pestaña por defecto
     this.mostrarPestana("Altas");
-    // Paso por defecto
     this.mostrarPaso(1);
+
+    this.autorrellenarUsu();
+    this.touchFechaRegistro(); // auto rellena DD-MM-AAAA si está vacío
+
     this.actualizarUIEstado();
     console.log("✅ Sistema de Gestión Emerg inicializado");
-    this.autorellenarUsu();
-    this.touchFechaRegistro(); //setea fecha/hora actual
-    autorrellenarUsu() {
-  // Prioridad: ?user= en la URL > localStorage > 'demo-user'
-  const url = new URL(window.location.href);
-  const qUser = url.searchParams.get("user");
-  const lsUser = localStorage.getItem("app_user");
-  const user = qUser || lsUser || "demo-user";
-  const usu = this.qs("#usu");
-  if (usu) {
-    usu.value = user;
-    // guarda para siguientes sesiones
-    localStorage.setItem("app_user", user);
-  }
-}
-
-touchFechaRegistro() {
-  const now = new Date();
-  const pad = n => String(n).padStart(2, "0");
-  const stamp = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
-  const f = this.qs("#fecha-registro");
-  if (f) f.value = stamp;
-}
-
   }
 
-  // Helpers de selección
-  qs(sel) { return document.querySelector(sel); }
-  qsa(sel) { return Array.from(document.querySelectorAll(sel)); }
+  // ===== Helpers =====
+  qs(sel){ return document.querySelector(sel); }
+  qsa(sel){ return Array.from(document.querySelectorAll(sel)); }
 
-  // Selectores con retrocompatibilidad (.tab-btn | .tab) ; (.paso | .step)
-  get tabButtons() { return this.qsa(".tab-btn").length ? this.qsa(".tab-btn") : this.qsa(".tab"); }
-  get stepItems()  { return this.qsa(".paso").length ? this.qsa(".paso") : this.qsa(".step"); }
-  get saveBtn()    { return this.qs("#btnGuardarFinal") || this.qs("#guardarBtn"); }
+  formatDateDDMMYYYY(d = new Date()) {
+    const pad = n => String(n).padStart(2, "0");
+    return `${pad(d.getDate())}-${pad(d.getMonth()+1)}-${d.getFullYear()}`;
+  }
 
+  autorrellenarUsu() {
+    const url = new URL(window.location.href);
+    const qUser = url.searchParams.get("user");
+    const lsUser = localStorage.getItem("app_user");
+    const user = qUser || lsUser || "demo-user";
+    const usu = this.qs("#usu");
+    if (usu) {
+      if (!usu.value?.trim()) usu.value = user;
+      localStorage.setItem("app_user", usu.value.trim());
+    }
+  }
+
+  touchFechaRegistro() {
+    const f = this.qs("#fecha-registro");
+    if (f && !f.value?.trim()) f.value = this.formatDateDDMMYYYY();
+  }
+
+  // ===== Eventos =====
   setupEventListeners() {
     // Tabs principales
-    this.tabButtons.forEach(btn => {
+    this.qsa(".tab-btn").forEach(btn => {
       btn.addEventListener("click", (e) => {
-        const tab = e.currentTarget?.dataset?.tab || e.currentTarget?.textContent?.trim() || "Altas";
-        this.mostrarPestana(tab);
+        const tab = e.currentTarget?.dataset?.tab;
+        if (tab) this.mostrarPestana(tab);
       });
     });
 
     // Stepper
-    this.stepItems.forEach(paso => {
+    this.qsa(".paso").forEach(paso => {
       paso.addEventListener("click", (e) => {
         const nuevoPaso = parseInt(e.currentTarget?.dataset?.paso || "0", 10);
         if (!nuevoPaso) return;
-        // Gating
         if (nuevoPaso === 2 && !this.familiarValid) {
           alert("⚠️ Debes validar el Familiar antes de pasar a Afectado.");
           return;
@@ -81,7 +74,7 @@ touchFechaRegistro() {
       });
     });
 
-    // Subpestañas (familiar/afectado)
+    // Subpestañas
     this.qsa(".pestana-interna").forEach(pestana => {
       pestana.addEventListener("click", (e) => {
         const id = e.currentTarget?.dataset?.pestana;
@@ -94,70 +87,60 @@ touchFechaRegistro() {
     this.qs("#btnSiguienteAfectado")?.addEventListener("click", () => this.mostrarPaso(2));
     this.qs("#btnValidarAfectado")?.addEventListener("click", () => this.validarAfectado());
     this.qs("#btnSiguienteConfirmacion")?.addEventListener("click", () => this.mostrarPaso(3));
-    this.saveBtn?.addEventListener("click", () => this.guardarRegistro());
+    this.qs("#btnGuardarFinal")?.addEventListener("click", () => this.guardarRegistro());
 
-    // Efectos de foco (suaves, no intrusivos)
-    this.qsa("input, select, textarea").forEach(field => {
-      field.addEventListener("focus", function () { this.style.boxShadow = "0 0 0 3px rgba(52,152,219,.1)"; });
-      field.addEventListener("blur", function () { this.style.boxShadow = "none"; });
+    // Seguridad: todos los botones son type="button" por defecto
+    this.qsa("button").forEach(b => {
+      if (!b.getAttribute("type")) b.setAttribute("type", "button");
     });
   }
 
-  // Tabs principales
+  // ===== Tabs =====
   mostrarPestana(tabName) {
-    // Desactivar todo
-    this.tabButtons.forEach(btn => btn.classList.remove("active"));
+    this.qsa(".tab-btn").forEach(btn => btn.classList.remove("active"));
     this.qsa(".tab-content").forEach(tab => tab.classList.remove("active"));
-
-    // Activar seleccionado (por data-tab si existe, si no por texto)
-    const btn = this.tabButtons.find(b => (b.dataset?.tab === tabName) || (b.textContent?.trim() === tabName));
-    btn?.classList.add("active");
-
-    // Mostrar contenedor con #id = tabName (Altas, Consultas, Dashboard)
+    this.qs(`[data-tab="${tabName}"]`)?.classList.add("active");
     this.qs(`#${tabName}`)?.classList.add("active");
   }
 
-  // Stepper (1 familiar, 2 afectado, 3 confirmación)
+  // ===== Pasos =====
   mostrarPaso(numeroPaso) {
     this.pasoActual = numeroPaso;
 
     // Reset estados visuales
-    this.stepItems.forEach(p => p.classList.remove("activo", "active", "completado", "bloqueado"));
+    this.qsa(".paso").forEach(p => p.classList.remove("activo", "completado", "bloqueado"));
 
     // Completados según flags
-    const s1 = this.stepItems.find(s => (s.dataset?.paso === "1"));
-    const s2 = this.stepItems.find(s => (s.dataset?.paso === "2"));
-    const s3 = this.stepItems.find(s => (s.dataset?.paso === "3"));
-    if (this.familiarValid) s1?.classList.add("completado");
-    if (this.afectadoValid) s2?.classList.add("completado");
+    if (this.familiarValid) this.qs(`[data-paso="1"]`)?.classList.add("completado");
+    if (this.afectadoValid) this.qs(`[data-paso="2"]`)?.classList.add("completado");
 
     // Bloqueos
-    if (!this.familiarValid) s2?.classList.add("bloqueado");
-    if (!(this.familiarValid && this.afectadoValid)) s3?.classList.add("bloqueado");
+    if (!this.familiarValid) this.qs(`[data-paso="2"]`)?.classList.add("bloqueado");
+    if (!(this.familiarValid && this.afectadoValid)) this.qs(`[data-paso="3"]`)?.classList.add("bloqueado");
 
-    // Activo actual (soporta .activo y .active)
-    const current = this.stepItems.find(s => (s.dataset?.paso === String(numeroPaso)));
-    current?.classList.add("activo");
-    current?.classList.add("active");
+    // Activo
+    this.qs(`[data-paso="${numeroPaso}"]`)?.classList.add("activo");
 
-    // Mostrar contenido del paso
+    // Mostrar contenido
     this.qsa(".form-paso").forEach(p => p.classList.remove("activo"));
-    const idCont = `#paso-${this.getPasoName(numeroPaso)}`;
-    this.qs(idCont)?.classList.add("activo");
+    this.qs(`#paso-${this.getPasoName(numeroPaso)}`)?.classList.add("activo");
 
-    // Subpestañas por defecto
+    // Subpestaña por defecto
     if (numeroPaso === 1) this.mostrarPestanaInterna("familiar-1");
     if (numeroPaso === 2) this.mostrarPestanaInterna("afectado-1");
 
-    // Resumen si vamos a 3
+    // Resumen al entrar al 3
     if (numeroPaso === 3) this.refrescarResumen();
+
+    // Scroll suave al inicio del contenedor (mejor UX)
+    this.qs(".alta-container")?.scrollIntoView({ behavior: "smooth", block: "start" });
 
     this.actualizarUIEstado();
   }
 
-  getPasoName(n) { return ({1:"familiar", 2:"afectado", 3:"confirmacion"})[n]; }
+  getPasoName(n){ return ({1:"familiar",2:"afectado",3:"confirmacion"})[n]; }
 
-  // Subtabs
+  // ===== Subpestañas =====
   mostrarPestanaInterna(id) {
     this.qsa(".pestana-interna").forEach(p => p.classList.remove("activa"));
     this.qs(`.pestana-interna[data-pestana="${id}"]`)?.classList.add("activa");
@@ -165,23 +148,13 @@ touchFechaRegistro() {
     this.qs(`#${id}`)?.classList.add("activa");
   }
 
-  // === Validaciones ===
+  // ===== Validaciones =====
   validarFamiliar() {
-    // Compatibilidad de IDs:
-    // - En mi index: #nombre, #apellidos, #telefono-principal
-    // - En tu versión previa: podrías usar .required-field; mantenemos también eso como fallback
-    const nombre  = this.qs("#nombre")?.value?.trim() || this.qs("#famNombre")?.value?.trim();
-    const apell   = this.qs("#apellidos")?.value?.trim() || this.qs("#famApellidos")?.value?.trim();
-    const tel     = this.qs("#telefono-principal")?.value?.trim() || this.qs("#famTelefono")?.value?.trim();
+    const nombre = this.qs("#nombre")?.value?.trim();
+    const apell = this.qs("#apellidos")?.value?.trim();
+    const tel   = this.qs("#telefono-principal")?.value?.trim();
 
-    // Si hay .required-field, las repasamos también
-    const reqFields = this.qsa(".required-field");
-    let reqOK = true;
-    reqFields.forEach(f => { if (!f.value?.trim()) reqOK = false; });
-
-    const ok = (!!nombre && !!apell && !!tel) || reqOK;
-
-    if (!ok) {
+    if (!(nombre && apell && tel)) {
       alert("⚠️ Completa Nombre, Apellidos y Teléfono del Familiar.");
       this.familiarValid = false;
       this.actualizarUIEstado();
@@ -190,6 +163,10 @@ touchFechaRegistro() {
 
     this.familiarValid = true;
     alert("✅ Familiar validado correctamente.");
+
+    // Sugerencia UX: tras validar, abrir la subpestaña Contacto si no lo estaba
+    this.mostrarPestanaInterna("familiar-2");
+
     this.actualizarUIEstado();
   }
 
@@ -200,28 +177,30 @@ touchFechaRegistro() {
     }
     const nom = this.qs("#afeNombre")?.value?.trim();
     const ape = this.qs("#afeApellidos")?.value?.trim();
-    const ok = (!!nom && !!ape);
-
-    if (!ok) {
+    if (!(nom && ape)) {
       alert("⚠️ Completa Nombre y Apellidos del Afectado.");
       this.afectadoValid = false;
       this.actualizarUIEstado();
       return;
     }
-
     this.afectadoValid = true;
     alert("✅ Afectado validado correctamente.");
     this.actualizarUIEstado();
   }
 
-  // === Resumen ===
+  // ===== Resumen =====
   refrescarResumen() {
-    // Familiar (IDs del index nuevo; si no existen, usamos fallback donde tenga sentido)
-    this.setText("#rFamNombre",    this.qs("#nombre")?.value || this.qs("#famNombre")?.value || "—");
-    this.setText("#rFamApellidos", this.qs("#apellidos")?.value || this.qs("#famApellidos")?.value || "—");
-    this.setText("#rFamTelefono",  this.qs("#telefono-principal")?.value || this.qs("#famTelefono")?.value || "—");
-    this.setText("#rFamEmail",     this.qs("#email")?.value || this.qs("#famEmail")?.value || "—");
-    this.setText("#rFamRelacion",  this.qs("#relacion")?.value || this.qs("#famRelacion")?.value || "—");
+    // Meta
+    this.setText("#rUsu", this.qs("#usu")?.value || "—");
+    this.setText("#rFechaRegistro", this.qs("#fecha-registro")?.value || "—");
+
+    // Familiar
+    this.setText("#rFamNombre", this.qs("#nombre")?.value || "—");
+    this.setText("#rFamApellidos", this.qs("#apellidos")?.value || "—");
+    this.setText("#rFamTelefono", this.qs("#telefono-principal")?.value || "—");
+    this.setText("#rFamEmail", this.qs("#email")?.value || "—");
+    this.setText("#rFamRelacion", this.qs("#relacion")?.value || "—");
+    this.setText("#rCodFamiliar", this.qs("#cod-familiar")?.value || "—");
 
     // Afectado
     this.setText("#rAfeNombre",  this.qs("#afeNombre")?.value || "—");
@@ -230,100 +209,76 @@ touchFechaRegistro() {
     this.setText("#rAfeEdad",    this.qs("#afeEdad")?.value || "—");
     this.setText("#rAfeEstado",  this.qs("#afeEstado")?.value || "—");
     this.setText("#rAfeNotas",   this.qs("#afeNotas")?.value || "—");
-    refrescarResumen() {
-  // ...lo que ya tienes...
-  // Nuevos
-  this.setText("#rUsu", this.qs("#usu")?.value || "—");
-  this.setText("#rFechaRegistro", this.qs("#fecha-registro")?.value || "—");
-  this.setText("#rCodFamiliar", this.qs("#cod-familiar")?.value || "—");
-  this.setText("#rCodVictimaRelacion", this.qs("#cod-victima-relacion")?.value || "—");
-}
-
+    this.setText("#rCodVictimaRelacion", this.qs("#cod-victima-relacion")?.value || "—");
   }
 
   setText(sel, val) { const el = this.qs(sel); if (el) el.textContent = val || "—"; }
 
-  // === Guardado ===
+  // ===== Guardado =====
   guardarRegistro() {
     if (!(this.familiarValid && this.afectadoValid)) {
       alert("⚠️ Debes validar Familiar y Afectado antes de guardar.");
       return;
-      this.touchFechaRegistro();
     }
 
-    // Aquí integras la llamada real (SharePoint / API / Power Automate…)
-    // DEMO:
-    this.saveBtn.innerHTML = "✓ Guardando...";
-    this.saveBtn.style.background = "linear-gradient(135deg, #27ae60, #2ecc71)";
+    // Sello de fecha (DD-MM-AAAA) antes de persistir
+    const f = this.qs("#fecha-registro");
+    if (f) f.value = this.formatDateDDMMYYYY();
 
-    setTimeout(() => {
-      alert("💾 Registro guardado correctamente.");
-      this.saveBtn.innerHTML = "Guardar";
-      this.saveBtn.style.background = "";
+    // Aquí iría tu POST/PATCH real a SharePoint/Power Automate/etc.
+    alert("💾 DEMO: Registro guardado correctamente.");
 
-      // KPIs demo
-      this.totalFam += 1; this.totalAfe += 1;
-      this.qs("#kpiFam") && (this.qs("#kpiFam").textContent = this.totalFam);
-      this.qs("#kpiAfe") && (this.qs("#kpiAfe").textContent = this.totalAfe);
+    // KPIs demo
+    this.totalFam += 1;
+    this.totalAfe += 1;
+    this.qs("#kpiFam") && (this.qs("#kpiFam").textContent = this.totalFam);
+    this.qs("#kpiAfe") && (this.qs("#kpiAfe").textContent = this.totalAfe);
 
-      // Reset flujo + limpiar campos habituales
-      this.familiarValid = false; this.afectadoValid = false;
-      [
-        "control-familiar","apellidos","nombre","edad","relacion","dni","nacionalidad",
-        "email","telefono-principal","telefono-secundario","direccion-permanente","direccion-temporal",
-        "nombre-portavoz","codigo-familiar","codigo-victima",
-        "afeNombre","afeApellidos","afeDoc","afeEdad","afeEstado","afeNotas",
-        "famNombre","famApellidos","famTelefono","famEmail","famRelacion"
-      ].forEach(id => { const el = this.qs("#"+id); if (el) el.value = ""; });
+    // Reset flujo (conservar Usu); limpiar campos para la siguiente alta
+    this.familiarValid = false;
+    this.afectadoValid = false;
 
-      // Uncheck checkboxes/selects múltiples
-      this.qs("#portavoz") && (this.qs("#portavoz").checked = false);
-      const mult = this.qs("#necesidades-especiales");
-      if (mult && mult.options) Array.from(mult.options).forEach(o => o.selected = false);
+    [
+      "fecha-registro", "cod-familiar", "cod-victima-relacion",
+      "control-familiar","apellidos","nombre","edad","relacion","dni","nacionalidad",
+      "email","telefono-principal","telefono-secundario","direccion-permanente","direccion-temporal",
+      "nombre-portavoz",
+      "afeNombre","afeApellidos","afeDoc","afeEdad","afeEstado","afeNotas"
+    ].forEach(id => { const el = this.qs("#"+id); if (el) el.value = ""; });
 
-      this.mostrarPaso(1);
-    }, 800);
+    // Uncheck y selects múltiples
+    this.qs("#portavoz") && (this.qs("#portavoz").checked = false);
+    const mult = this.qs("#necesidades-especiales");
+    if (mult && mult.options) Array.from(mult.options).forEach(o => o.selected = false);
+
+    // Fecha de la siguiente alta
+    this.touchFechaRegistro();
+
+    // Volver al Paso 1
+    this.mostrarPaso(1);
   }
 
   actualizarUIEstado() {
-    // Mostrar/ocultar Guardar
-    if (this.saveBtn) this.saveBtn.style.display = (this.familiarValid && this.afectadoValid) ? "inline-flex" : "none";
-    [
-  // Mantén Usu (no lo tocamos)
-  "fecha-registro",           // se repondrá con touchFechaRegistro() en la siguiente alta
-  "cod-familiar",
-  "cod-victima-relacion",
-  // ... (el resto que ya limpiabas)
-  "control-familiar","apellidos","nombre","edad","relacion","dni","nacionalidad",
-  "email","telefono-principal","telefono-secundario","direccion-permanente","direccion-temporal",
-  "nombre-portavoz","codigo-familiar","codigo-victima",  // si aún existían legacy
-  "afeNombre","afeApellidos","afeDoc","afeEdad","afeEstado","afeNotas",
-  "famNombre","famApellidos","famTelefono","famEmail","famRelacion"
-].forEach(id => { const el = this.qs("#"+id); if (el) el.value = ""; });
+    // Botón Guardar visible solo si ambos validados
+    const btnGuardar = this.qs("#btnGuardarFinal");
+    if (btnGuardar) btnGuardar.style.display = (this.familiarValid && this.afectadoValid) ? "inline-flex" : "none";
 
-this.touchFechaRegistro(); // fecha nueva para la siguiente ficha
-
-
-    // Bloqueos visuales y puntero
-    this.stepItems.forEach(p => {
+    // Bloqueos visuales
+    this.qsa(".paso").forEach(p => {
       const pasoNum = parseInt(p.dataset?.paso || "0", 10);
       let bloqueado = false;
       if (pasoNum === 2 && !this.familiarValid) bloqueado = true;
       if (pasoNum === 3 && !(this.familiarValid && this.afectadoValid)) bloqueado = true;
       p.classList.toggle("bloqueado", bloqueado);
       p.style.pointerEvents = bloqueado ? "none" : "auto";
-      p.style.opacity = bloqueado ? "0.5" : "1";
     });
 
-    // Marcar completados
-    const s1 = this.stepItems.find(s => (s.dataset?.paso === "1"));
-    const s2 = this.stepItems.find(s => (s.dataset?.paso === "2"));
-    s1?.classList.toggle("completado", this.familiarValid);
-    s2?.classList.toggle("completado", this.afectadoValid);
+    // Completados
+    this.qs(`[data-paso="1"]`)?.classList.toggle("completado", this.familiarValid);
+    this.qs(`[data-paso="2"]`)?.classList.toggle("completado", this.afectadoValid);
   }
 }
 
-// Boot
 document.addEventListener("DOMContentLoaded", () => {
   window.app = new DemoApp();
   window.app.init();
